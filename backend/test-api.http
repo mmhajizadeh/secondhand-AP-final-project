@@ -1,0 +1,31 @@
+### ۱. ساخت یک شهر جدید (مثلاً تهران)
+POST http://localhost:8080/api/cities
+Content-Type: application/json
+
+{
+  "name": "تهران"
+}
+
+### ۲. ساخت یک دسته‌بندی جدید (مثلاً لوازم خانگی)
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "لوازم خانگی"
+}
+
+### ۳. حالا ساخت آگهی! (چون تهران و لوازم خانگی هر دو اولین دیتای ما هستند، آیدی آن‌ها ۱ است)
+POST http://localhost:8080/api/ads
+Content-Type: application/json
+
+{
+  "title": "مبل راحتی",
+  "description": "بسیار تمیز و در حد نو",
+  "price": 8500000,
+  "city": {
+    "id": 1
+  },
+  "category": {
+    "id": 1
+  }
+}
