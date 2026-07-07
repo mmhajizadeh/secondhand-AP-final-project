@@ -56,4 +56,35 @@ public class AdvertisementService {
     public List<Advertisement> getAllAdvertisementsForAdmin() {
         return advertisementRepository.findAll();
     }
+
+    /**
+     * Retrieves active advertisements filtered by city.
+     *
+     * @param cityId The ID of the city.
+     * @return A list of active {@link Advertisement} objects in the specified city.
+     */
+    public List<Advertisement> getActiveAdsByCity(Long cityId) {
+        return advertisementRepository.findByCityIdAndStatus(cityId, AdvertisementStatus.ACTIVE);
+    }
+
+    /**
+     * Retrieves active advertisements filtered by category.
+     *
+     * @param categoryId The ID of the category.
+     * @return A list of active {@link Advertisement} objects in the specified category.
+     */
+    public List<Advertisement> getActiveAdsByCategory(Long categoryId) {
+        return advertisementRepository.findByCategoryIdAndStatus(categoryId, AdvertisementStatus.ACTIVE);
+    }
+
+    /**
+     * Retrieves active advertisements within a specific price range.
+     *
+     * @param minPrice The minimum price.
+     * @param maxPrice The maximum price.
+     * @return A list of active {@link Advertisement} objects within the price range.
+     */
+    public List<Advertisement> getActiveAdsByPriceRange(Long minPrice, Long maxPrice) {
+        return advertisementRepository.findByPriceBetweenAndStatus(minPrice, maxPrice, AdvertisementStatus.ACTIVE);
+    }
 }
