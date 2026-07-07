@@ -58,4 +58,41 @@ public class AdvertisementController {
     public List<Advertisement> getAllAds() {
         return advertisementService.getAllAdvertisementsForAdmin();
     }
+
+    /**
+     * Endpoint to filter active advertisements by a specific city ID.
+     *
+     * @param cityId The ID of the city passed in the URL path.
+     * @return A list of matching {@link Advertisement} objects.
+     * Endpoint: GET /api/ads/city/{cityId}
+     */
+    @GetMapping("/city/{cityId}")
+    public List<Advertisement> getAllAdsByCity(@PathVariable Long cityId) {
+        return advertisementService.getActiveAdsByCity(cityId);
+    }
+
+    /**
+     * Endpoint to filter active advertisements by a specific category ID.
+     *
+     * @param categoryId The ID of the category passed in the URL path.
+     * @return A list of matching {@link Advertisement} objects.
+     * Endpoint: GET /api/ads/category/{categoryId}
+     */
+    @GetMapping("/category/{categoryId}")
+    public List<Advertisement> getAdsByCategory(@PathVariable Long categoryId) {
+        return advertisementService.getActiveAdsByCategory(categoryId);
+    }
+
+    /**
+     * Endpoint to filter active advertisements within a specific price range.
+     *
+     * @param min The minimum acceptable price.
+     * @param max The maximum acceptable price.
+     * @return A list of matching {@link Advertisement} objects.
+     * Endpoint: GET /api/ads/price?min=X&max=Y
+     */
+    @GetMapping("/price")
+    public List<Advertisement> getAdsByPrice(@RequestParam Long min, @RequestParam Long max) {
+        return advertisementService.getActiveAdsByPriceRange(min, max);
+    }
 }
