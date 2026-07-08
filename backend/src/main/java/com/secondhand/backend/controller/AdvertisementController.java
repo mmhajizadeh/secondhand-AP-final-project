@@ -3,6 +3,7 @@ package com.secondhand.backend.controller;
 import com.secondhand.backend.model.Advertisement;
 import com.secondhand.backend.model.AdvertisementStatus;
 import com.secondhand.backend.service.AdvertisementService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,7 +46,11 @@ public class AdvertisementController {
      * Endpoint: POST /api/ads
      */
     @PostMapping
-    public Advertisement createAdvertisement(@RequestBody Advertisement advertisement) {
+    public Advertisement createAdvertisement(@RequestBody Advertisement advertisement, Authentication authentication) {
+        String username = authentication.getName();
+
+        advertisement.setOwnerUsername(username);
+
         return advertisementService.saveAdvertisement(advertisement);
     }
 
@@ -102,12 +107,13 @@ public class AdvertisementController {
      *
      * @param id The ID of the advertisement to update.
      * @param advertisement The updated advertisement data.
+     * @param authentication The requesting user.
      * @return The updated {@link Advertisement} object.
      * Endpoint: PUT /api/ads/{id}
      */
     @PutMapping("/{id}")
-    public Advertisement updateAd(@PathVariable Long id, @RequestBody Advertisement advertisement) {
-        return advertisementService.updateAdvertisement(id, advertisement);
+    public Advertisement updateAd(@PathVariable Long id, @RequestBody Advertisement advertisement, Authentication authentication) {
+        return advertisementService.updateAdvertisement(id, advertisement, authentication.getName());
     }
 
     /**
@@ -122,5 +128,17 @@ public class AdvertisementController {
     @PatchMapping("/{id}/status")
     public Advertisement changeStatus(@PathVariable Long id, @RequestParam AdvertisementStatus status) {
         return advertisementService.updateAdvertisementStatus(id, status);
+    }
+
+    /**
+     * Endpoint to delete an existing advertisement's details.
+     *
+     * @param id The ID of the advertisement to delete.
+     * @param authentication The requesting user.
+     * Endpoint: DELETE /api/ads/{id}
+     */
+    @DeleteMapping("/{id}")
+    public void deleteAd(@PathVariable Long id, Authentication authentication) {
+        advertisementService.deleteAdvertisement(id, authentication.getName());
     }
 }

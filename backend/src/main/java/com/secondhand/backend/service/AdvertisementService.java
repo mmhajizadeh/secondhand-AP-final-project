@@ -90,16 +90,21 @@ public class AdvertisementService {
     }
 
     /**
-     * Updates the details of an existing advertisement.
+     * Updates the details of an existing advertisement if the requesting user is the owner.
      *
      * @param id The ID of the advertisement to update.
      * @param updatedAd The new advertisement data.
+     * @param requestingUsername The requesting user to update advertisement.
      * @return The updated {@link Advertisement} object.
-     * @throws RuntimeException if the advertisement with the given ID is not found.
+     * @throws RuntimeException if the advertisement with the given ID is not found or access denied.
      */
-    public Advertisement updateAdvertisement(Long id, Advertisement updatedAd) {
+    public Advertisement updateAdvertisement(Long id, Advertisement updatedAd, String requestingUsername) {
         // find Advertisement in database
         Advertisement existingAd = advertisementRepository.findById(id).orElseThrow(() -> new RuntimeException("Advertisement not found with id: " + id));
+
+        if(!existingAd.getOwnerUsername().equals(requestingUsername)) {
+            throw new RuntimeException("Access Denied: You can only edit your own advertisements.");
+        }
 
         existingAd.setTitle(updatedAd.getTitle());
         existingAd.setDescription(updatedAd.getDescription());
@@ -124,5 +129,22 @@ public class AdvertisementService {
 
         existingAd.setStatus(newStatus);
         return advertisementRepository.save(existingAd);
+    }
+
+    /**
+     * Deletes an advertisement if the requesting user is the owner.
+     *
+     * @param id The ID of the advertisement to delete.
+     * @param requestingUsername The requesting user to delete advertisement.
+     * @throws RuntimeException if the advertisement is not found or access denied.
+     */
+    public void deleteAdvertisement(Long id, String requestingUsername) {
+        Advertisement existingAd = advertisementRepository.findById(id).orElseThrow(() -> new RuntimeException("Advertisement not found with id: " + id));
+
+        if (!existingAd.getOwnerUsername().equals(requestingUsername)) {
+            throw new RuntimeException("Access Denied: You can only delete your own advertisements.");
+        }
+
+        advertisementRepository.delete(existingAd);
     }
 }

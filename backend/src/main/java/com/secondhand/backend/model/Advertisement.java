@@ -30,6 +30,9 @@ public class Advertisement {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Column(nullable = false)
+    private String ownerUsername;
+
     public Long getId() {
         return id;
     }
@@ -84,5 +87,13 @@ public class Advertisement {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
     }
 }
