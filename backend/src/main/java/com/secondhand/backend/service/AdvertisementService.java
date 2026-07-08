@@ -5,6 +5,7 @@ import com.secondhand.backend.model.AdvertisementStatus;
 import com.secondhand.backend.repository.AdvertisementRepository;
 import org.springframework.stereotype.Service;
 
+import java.lang.RuntimeException;
 import java.util.List;
 
 /**
@@ -86,5 +87,42 @@ public class AdvertisementService {
      */
     public List<Advertisement> getActiveAdsByPriceRange(Long minPrice, Long maxPrice) {
         return advertisementRepository.findByPriceBetweenAndStatus(minPrice, maxPrice, AdvertisementStatus.ACTIVE);
+    }
+
+    /**
+     * Updates the details of an existing advertisement.
+     *
+     * @param id The ID of the advertisement to update.
+     * @param updatedAd The new advertisement data.
+     * @return The updated {@link Advertisement} object.
+     * @throws RuntimeException if the advertisement with the given ID is not found.
+     */
+    public Advertisement updateAdvertisement(Long id, Advertisement updatedAd) {
+        // find Advertisement in database
+        Advertisement existingAd = advertisementRepository.findById(id).orElseThrow(() -> new RuntimeException("Advertisement not found with id: " + id));
+
+        existingAd.setTitle(updatedAd.getTitle());
+        existingAd.setDescription(updatedAd.getDescription());
+        existingAd.setPrice(updatedAd.getPrice());
+        existingAd.setCity(updatedAd.getCity());
+        existingAd.setCategory(updatedAd.getCategory());
+
+        return advertisementRepository.save(existingAd);
+    }
+
+    /**
+     * Updates the status of an advertisement.
+     * This is used by admins to approve/reject ads, or by owners to mark them as sold.
+     *
+     * @param id The ID of the advertisement.
+     * @param newStatus The new {@link AdvertisementStatus} to apply.
+     * @return The updated {@link Advertisement} object.
+     * @throws RuntimeException if the advertisement is not found.
+     */
+    public Advertisement updateAdvertisementStatus(Long id, AdvertisementStatus newStatus) {
+        Advertisement existingAd = advertisementRepository.findById(id).orElseThrow(() -> new RuntimeException("Advertisement not found with id: " + id));
+
+        existingAd.setStatus(newStatus);
+        return advertisementRepository.save(existingAd);
     }
 }

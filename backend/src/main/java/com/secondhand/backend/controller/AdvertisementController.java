@@ -1,6 +1,7 @@
 package com.secondhand.backend.controller;
 
 import com.secondhand.backend.model.Advertisement;
+import com.secondhand.backend.model.AdvertisementStatus;
 import com.secondhand.backend.service.AdvertisementService;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,5 +95,32 @@ public class AdvertisementController {
     @GetMapping("/price")
     public List<Advertisement> getAdsByPrice(@RequestParam Long min, @RequestParam Long max) {
         return advertisementService.getActiveAdsByPriceRange(min, max);
+    }
+
+    /**
+     * Endpoint to update an existing advertisement's details.
+     *
+     * @param id The ID of the advertisement to update.
+     * @param advertisement The updated advertisement data.
+     * @return The updated {@link Advertisement} object.
+     * Endpoint: PUT /api/ads/{id}
+     */
+    @PutMapping("/{id}")
+    public Advertisement updateAd(@PathVariable Long id, @RequestBody Advertisement advertisement) {
+        return advertisementService.updateAdvertisement(id, advertisement);
+    }
+
+    /**
+     * Endpoint to change the status of an advertisement.
+     * Can be used for admin approvals or owner marking as sold.
+     *
+     * @param id The ID of the advertisement.
+     * @param status The new status (e.g., ACTIVE, REJECTED, SOLD).
+     * @return The updated {@link Advertisement} object.
+     * Endpoint: PATCH /api/ads/{id}/status?status=NEW_STATUS
+     */
+    @PatchMapping("/{id}/status")
+    public Advertisement changeStatus(@PathVariable Long id, @RequestParam AdvertisementStatus status) {
+        return advertisementService.updateAdvertisementStatus(id, status);
     }
 }
