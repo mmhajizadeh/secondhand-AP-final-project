@@ -1,4 +1,5 @@
 package com.secondhand.backend.config;
+
 import com.secondhand.backend.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,20 +17,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.List;
 
 /**
- * Main security configuration for the entire system.
- * <p>
- * Hey teammate working on the advertisement module, pay attention to this:
- * <ul>
- *     <li>GET endpoints for viewing active ads are public (permitAll) – no token needed</li>
- *     <li>Endpoints under /api/admin/** are restricted to ADMIN role only</li>
- *     <li>All other endpoints require a valid JWT token (any authenticated user)</li>
- * </ul>
- * If you add a new endpoint that should be public or admin-only,
- * don't forget to update the corresponding lists below.
- * </p>
+ * Central security configuration for the system.
+ *
+ * Note for the teammate working on the advertisement module:
+ * - GET endpoints for listing/viewing active advertisements must stay public (permitAll).
+ * - Admin endpoints (/api/admin/**) are restricted to the ADMIN role only.
+ * - Every other endpoint requires a valid token (any logged-in user).
+ * If you add a new endpoint that should be public or admin-only, update the
+ * matching list below.
  */
 @Configuration
 @EnableWebSecurity
@@ -67,13 +66,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints : register, login
+                        // Public endpoints: register, login
                         .requestMatchers("/api/auth/**").permitAll()
                         // Public browsing/search of active advertisements, no login required
                         .requestMatchers("/api/advertisements/**").permitAll()
+                        // Public viewing of a seller's rating summary (e.g. shown on ad detail page)
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/ratings/seller/**").permitAll()
                         // Admin panel restricted to ADMIN role
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        // Everything else requires authentication (chat, favorites, rating, creating a listing, ...)
+                        // Everything else requires authentication (chat, favorites, submitting a rating, creating a listing, etc.)
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -85,8 +86,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Dev-only: allows any origin.
-        // Since our frontend is JavaFX (not a browser), CORS isn't really a concern.
+        // In development, allow any origin; since our Frontend is JavaFX (not a browser), CORS is effectively a non-issue
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
