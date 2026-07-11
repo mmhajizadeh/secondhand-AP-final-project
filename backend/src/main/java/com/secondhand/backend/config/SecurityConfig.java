@@ -1,5 +1,4 @@
 package com.secondhand.backend.config;
-
 import com.secondhand.backend.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +24,7 @@ import java.util.List;
  *
  * Note for the teammate working on the advertisement module:
  * - GET endpoints for listing/viewing active advertisements must stay public (permitAll).
- * - Admin endpoints (/api/admin/**) are restricted to the ADMIN role only.
+ * - Admin endpoints (/ api / admin /**) are restricted to the ADMIN role only.
  * - Every other endpoint requires a valid token (any logged-in user).
  * If you add a new endpoint that should be public or admin-only, update the
  * matching list below.
