@@ -16,4 +16,5 @@ module com.secondhand.frontend {
     exports com.secondhand.frontend.service.dto;
     exports com.secondhand.frontend.session;
     exports com.secondhand.frontend.model;
+    exports com.secondhand.frontend.util;
 }
