@@ -16,5 +16,8 @@
     <Label fx:id="welcomeLabel" style="-fx-font-size: 14px;"/>
     <Label text="(This is a temporary screen; the main listings page will replace it later)" style="-fx-font-size: 11px; -fx-text-fill: gray;"/>
 
+    <Button onAction="#handleGoToRateSeller" text="Rate a Seller (test)"/>
+    <Button onAction="#handleGoToConversations" text="My Conversations"/>
+    <Button fx:id="adminDashboardButton" onAction="#handleGoToAdminDashboard" text="Admin Dashboard" visible="false" managed="false"/>
     <Button onAction="#handleLogout" text="Log Out"/>
 </VBox>
