@@ -6,8 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 
-import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -20,25 +21,31 @@ public class MainController implements Initializable {
     }
 
     private void loadAds() {
-        for (int i = 1; i <= 6; i++) {
-            try {
+        try {
+            List<Advertisement> ads = ApiService.getActiveAds();
+            DecimalFormat priceFormat = new DecimalFormat("#,###");
+
+            for (Advertisement ad : ads) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ad-card.fxml"));
                 HBox cardBox = fxmlLoader.load();
 
                 AdCardController cardController = fxmlLoader.getController();
+
+                String cityName = (ad.getCity() != null) ? ad.getCity().getName() : "نامشخص";
+                String categoryName = (ad.getCategory() != null) ? ad.getCategory().getName() : "بدون دسته";
+
                 cardController.setAdData(
-                        "دوچرخه کوهستانی مدل " + i,
-                        "5,000,000 تومان",
-                        "تهران | دقایقی پیش",
-                        "dummy_image_url"
+                        ad.getTitle(),
+                        priceFormat.format(ad.getPrice()) + " تومان",
+                        categoryName + " | " + cityName + " | دقایقی پیش",
+                        "image-url"
                 );
 
                 adsContainer.getChildren().add(cardBox);
-
-            } catch (IOException e) {
-                System.err.println("Error loading ad card: " + e.getMessage());
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            System.err.println("Error fetching ads from server: " +  e.getMessage());
+            e.printStackTrace();
         }
     }
 }
