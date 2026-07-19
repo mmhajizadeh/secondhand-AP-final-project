@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="16.0" xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.secondhand.frontend.controller.HomePlaceholderController">
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
+    </padding>
+
+    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Login Successful"/>
+    <Label fx:id="welcomeLabel" style="-fx-font-size: 14px;"/>
+    <Label text="(This is a temporary screen; the main listings page will replace it later)" style="-fx-font-size: 11px; -fx-text-fill: gray;"/>
+
+    <Button onAction="#handleGoToRateSeller" text="Rate a Seller (test)"/>
+    <Button onAction="#handleGoToConversations" text="My Conversations"/>
+    <Button fx:id="adminDashboardButton" onAction="#handleGoToAdminDashboard" text="Admin Dashboard" visible="false" managed="false"/>
+    <Button onAction="#handleLogout" text="Log Out"/>
+</VBox>
