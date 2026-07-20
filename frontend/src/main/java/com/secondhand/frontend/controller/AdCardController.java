@@ -1,4 +1,4 @@
-package com.secondhand.frontend;
+package com.secondhand.frontend.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

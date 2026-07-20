@@ -1,7 +1,8 @@
-package com.secondhand.frontend;
+package com.secondhand.frontend.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.secondhand.frontend.model.Advertisement;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,7 +14,7 @@ import java.util.List;
  * Service class for handling HTTP communication with the backend API.
  */
 public class ApiService {
-    private static final String BASE_URL = "http://localhost:8080/api/ads";
+    private static final String BASE_URL = "http://localhost:8080/api/advertisements";
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -33,6 +34,10 @@ public class ApiService {
 
         System.out.println("HTTP Status Code: " + response.statusCode());
         System.out.println("Response Body: '" + response.body() + "'");
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Server returned error code: " +  response.statusCode() + " with body: " + response.body());
+        }
 
         return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
     }

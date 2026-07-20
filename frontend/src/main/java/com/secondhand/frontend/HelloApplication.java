@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Main JavaFX entry point. Starts the application on the login screen.
+ * Main JavaFX entry point. Starts the application on the main view screen.
  */
 public class HelloApplication extends Application {
 
@@ -16,11 +16,12 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws Exception {
         SceneManager.setPrimaryStage(stage);
 
+        // مسیر اصلاح‌شده بدون پوشه view
         FXMLLoader fxmlLoader = new FXMLLoader(
-                HelloApplication.class.getResource("/com/secondhand/frontend/view/login-view.fxml"));
+                HelloApplication.class.getResource("/com/secondhand/frontend/view/main-view.fxml"));
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root, 420, 420);
+        Scene scene = new Scene(root, 800, 600);
         stage.setTitle("Second Hand Market");
         stage.setScene(scene);
         stage.show();

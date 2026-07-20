@@ -1,5 +1,7 @@
-package com.secondhand.frontend;
+package com.secondhand.frontend.controller;
 
+import com.secondhand.frontend.model.Advertisement;
+import com.secondhand.frontend.service.ApiService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,7 +28,7 @@ public class MainController implements Initializable {
             DecimalFormat priceFormat = new DecimalFormat("#,###");
 
             for (Advertisement ad : ads) {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ad-card.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/secondhand/frontend/view/ad-card.fxml"));
                 HBox cardBox = fxmlLoader.load();
 
                 AdCardController cardController = fxmlLoader.getController();
@@ -46,6 +48,14 @@ public class MainController implements Initializable {
         } catch (Exception e) {
             System.err.println("Error fetching ads from server: " +  e.getMessage());
             e.printStackTrace();
+
+            javafx.application.Platform.runLater(() -> {
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                alert.setTitle("خطای ارتباط با سرور");
+                alert.setHeaderText("متاسفانه نتوانستیم آگهی‌ها را دریافت کنیم.");
+                alert.setContentText("لطفاً اتصال اینترنت خود را بررسی کنید یا دقایقی دیگر مجدداً تلاش نمایید.\nجزئیات خطا: " + e.getMessage());
+                alert.showAndWait();
+            });
         }
     }
 }

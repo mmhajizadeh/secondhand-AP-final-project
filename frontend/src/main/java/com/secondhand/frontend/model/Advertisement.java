@@ -1,4 +1,4 @@
-package com.secondhand.frontend;
+package com.secondhand.frontend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

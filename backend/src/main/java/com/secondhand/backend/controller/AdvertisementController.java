@@ -19,7 +19,7 @@ import java.util.List;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/api/ads")
+@RequestMapping("/api/advertisements")
 public class AdvertisementController {
     private final AdvertisementService advertisementService;
 
