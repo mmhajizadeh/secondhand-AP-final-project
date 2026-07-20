@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
 public class LoginController {
 
     @FXML
@@ -41,6 +42,7 @@ public class LoginController {
 
         hideError();
         loginButton.setDisable(true);
+
         // Runs on a background thread so the UI does not freeze while waiting for the backend.
         Task<AuthResponse> task = new Task<>() {
             @Override
@@ -56,7 +58,9 @@ public class LoginController {
                     response.getToken(),
                     new CurrentUser(response.getUserId(), response.getUsername(), response.getFullName(), response.getRole())
             );
-            SceneManager.switchTo("/com/secondhand/frontend/view/home-placeholder-view.fxml", "Second-Hand Marketplace");
+
+            // Redirect authenticated user to the main ads view
+            SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second-Hand Marketplace");
         });
         task.setOnFailed(event -> {
             loginButton.setDisable(false);
@@ -67,8 +71,14 @@ public class LoginController {
                 showError("Could not connect to the server. Make sure the backend is running.");
             }
         });
-
         new Thread(task).start();
+    }
+
+    // Handle guest login without requiring authentication
+    @FXML
+    private void handleGuestLogin() {
+        // Redirect guest directly to the main ads view
+        SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second-Hand Marketplace (Guest)");
     }
 
     @FXML
@@ -79,7 +89,6 @@ public class LoginController {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }
-
     private void hideError() {
         errorLabel.setVisible(false);
     }
