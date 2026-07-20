@@ -20,7 +20,7 @@ public class HelloApplication extends Application {
                 HelloApplication.class.getResource("/com/secondhand/frontend/view/main-view.fxml"));
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root, 900, 600);
+        Scene scene = new Scene(root, 1200, 700);
         stage.setTitle("Second Hand Market");
         stage.setScene(scene);
         stage.show();

@@ -4,10 +4,15 @@ import com.secondhand.frontend.model.Advertisement;
 import com.secondhand.frontend.model.Category;
 import com.secondhand.frontend.model.City;
 import com.secondhand.frontend.service.ApiService;
+import com.secondhand.frontend.session.SessionManager;
+import com.secondhand.frontend.util.NavigationContext;
+import com.secondhand.frontend.util.SceneManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -34,8 +39,13 @@ public class MainController implements Initializable {
     @FXML private TextField minPriceField;
     @FXML private TextField maxPriceField;
 
+    @FXML private Label userInfoLabel;
+    @FXML private Button adminDashboardBtn;
+    @FXML private Button authBtn;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setupUserSession();
         loadFilters();
         loadAds();
     }
@@ -155,5 +165,61 @@ public class MainController implements Initializable {
             alert.setContentText(errorMessage);
             alert.showAndWait();
         });
+    }
+
+    public void setupUserSession() {
+        boolean isLoggedIn = SessionManager.getInstance().isLoggedIn();
+        boolean isAdmin = SessionManager.getInstance().isAdmin();
+
+        if (adminDashboardBtn != null) {
+            adminDashboardBtn.setVisible(isAdmin);
+            adminDashboardBtn.setManaged(isAdmin);
+        }
+
+        if (isLoggedIn) {
+            String fullName = SessionManager.getInstance().getCurrentUser().getFullName();
+            userInfoLabel.setText("Welcome, " + fullName);
+            authBtn.setText("Logout");
+        } else {
+            userInfoLabel.setText("Guest User");
+            authBtn.setText("Login / Register");
+        }
+    }
+
+    @FXML
+    public void onAdminDashboardAction() {
+        SceneManager.switchTo("/com/secondhand/frontend/view/admin-home-view.fxml", "Admin Dashboard");
+    }
+
+    @FXML
+    public void onAuthAction() {
+        if (SessionManager.getInstance().isLoggedIn()) {
+            // logout
+            SessionManager.getInstance().clearSession();
+            setupUserSession();
+            loadAds();
+        } else {
+            SceneManager.switchTo("/com/secondhand/frontend/view/login-view.fxml", "Login");
+        }
+    }
+
+    @FXML
+    public void onAdsNavAction() {
+        loadAds(); // refresh ads
+    }
+
+    @FXML
+    public void onNewAdNavAction() {
+        System.out.println("Opening New Ad Form...");
+    }
+
+    @FXML
+    public void onFavoritesNavAction() {
+        System.out.println("Opening Favorites View...");
+    }
+
+    @FXML
+    public void onConversationsNavAction() {
+        SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
     }
 }

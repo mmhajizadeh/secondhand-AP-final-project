@@ -45,6 +45,11 @@ public class AdCardController {
         titleLabel.setText(title);
         priceLabel.setText(price);
         locationTimeLabel.setText(locationTime);
+
+        titleLabel.setStyle("-fx-text-fill: #2C3E50; -fx-font-weight: bold; -fx-font-size: 14px;");
+        priceLabel.setStyle("-fx-text-fill: #27AE60; -fx-font-weight: bold; -fx-font-size: 14px;");
+        locationTimeLabel.setStyle("-fx-text-fill: #7F8C8D; -fx-font-size: 12px;");
+
         try {
             adImage.setImage(new Image(imageUrl));
         } catch (Exception e) {
