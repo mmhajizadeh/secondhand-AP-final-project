@@ -31,5 +31,7 @@
 
     <Button fx:id="loginButton" defaultButton="true" maxWidth="Infinity" onAction="#handleLogin" text="Login"/>
 
+    <Hyperlink onAction="#handleGuestLogin" text="Continue as Guest"/>
+
     <Hyperlink onAction="#goToRegister" text="Don't have an account? Register"/>
 </VBox>
