@@ -1,4 +1,5 @@
 package com.secondhand.backend.config;
+
 import com.secondhand.backend.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,6 +70,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         // Public browsing/search of active advertisements, no login required
                         .requestMatchers("/api/advertisements/**").permitAll()
+
+                        // New public endpoints for main page filters (cities and categories)
+                        .requestMatchers("/api/cities/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
+
                         // Public viewing of a seller's rating summary (e.g. shown on ad detail page)
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/ratings/seller/**").permitAll()
                         // Admin panel restricted to ADMIN role
