@@ -3,6 +3,8 @@ package com.secondhand.frontend.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.secondhand.frontend.model.Advertisement;
+import com.secondhand.frontend.model.Category;
+import com.secondhand.frontend.model.City;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -40,5 +42,35 @@ public class ApiService {
         }
 
         return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
+    }
+
+    public static List<City> getAllCities() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/cities/all"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if  (response.statusCode() != 200) {
+            throw new RuntimeException("Error fetching cities: " +  response.statusCode());
+        }
+
+        return mapper.readValue(response.body(), new TypeReference<List<City>>() {});
+    }
+
+    public static List<Category> getAllCategories() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/categories/all"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error fetching categories: " +  response.statusCode());
+        }
+
+        return mapper.readValue(response.body(), new TypeReference<List<Category>>() {});
     }
 }

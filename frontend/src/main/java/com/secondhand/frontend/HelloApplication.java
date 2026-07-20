@@ -16,12 +16,11 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws Exception {
         SceneManager.setPrimaryStage(stage);
 
-        // مسیر اصلاح‌شده بدون پوشه view
         FXMLLoader fxmlLoader = new FXMLLoader(
                 HelloApplication.class.getResource("/com/secondhand/frontend/view/main-view.fxml"));
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 900, 600);
         stage.setTitle("Second Hand Market");
         stage.setScene(scene);
         stage.show();
