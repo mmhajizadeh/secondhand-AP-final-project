@@ -44,6 +44,12 @@ public class ApiService {
         return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
     }
 
+    /**
+     * Fetches all available cities from the backend.
+     *
+     * @return A list of {@link City} objects.
+     * @throws Exception if the network request fails or JSON parsing errors occur.
+     */
     public static List<City> getAllCities() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/cities/all"))
@@ -59,6 +65,12 @@ public class ApiService {
         return mapper.readValue(response.body(), new TypeReference<List<City>>() {});
     }
 
+    /**
+     * Fetches all advertisement categories from the backend.
+     *
+     * @return A list of {@link Category} objects.
+     * @throws Exception if the network request fails or JSON parsing errors occur.
+     */
     public static List<Category> getAllCategories() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/categories/all"))

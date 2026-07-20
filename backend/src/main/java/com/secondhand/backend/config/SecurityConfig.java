@@ -73,6 +73,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/ratings/seller/**").permitAll()
                         // Admin panel restricted to ADMIN role
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/cities/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
                         // Everything else requires authentication (chat, favorites, submitting a rating, creating a listing, etc.)
                         .anyRequest().authenticated()
                 )
