@@ -91,6 +91,13 @@ public class MainController implements Initializable {
                         "image-url"
                 );
 
+                cardBox.setOnMouseClicked(event -> {
+                    AdDetailController.setSelectedAd(ad);
+                    NavigationContext.setTargetAdvertisementId(ad.getId());
+                    NavigationContext.setTargetSellerUsername(ad.getOwnerUsername());
+                    SceneManager.switchTo("/com/secondhand/frontend/view/ad-detail-view.fxml", "Advertisement Details");
+                });
+
                 adsContainer.getChildren().add(cardBox);
             }
         } catch (Exception e) {
