@@ -11,6 +11,8 @@ public class NavigationContext {
 
     private static Long currentConversationId;
     private static String currentConversationTitle;
+    private static Long targetAdvertisementId;
+    private static String targetSellerUsername;
 
     private NavigationContext() {
     }
@@ -26,5 +28,21 @@ public class NavigationContext {
 
     public static String getCurrentConversationTitle() {
         return currentConversationTitle;
+    }
+
+    public static Long getTargetAdvertisementId() {
+        return targetAdvertisementId;
+    }
+
+    public static void setTargetAdvertisementId(Long id) {
+        targetAdvertisementId = id;
+    }
+
+    public static String getTargetSellerUsername() {
+        return targetSellerUsername;
+    }
+
+    public static void setTargetSellerUsername(String username) {
+        targetSellerUsername = username;
     }
 }

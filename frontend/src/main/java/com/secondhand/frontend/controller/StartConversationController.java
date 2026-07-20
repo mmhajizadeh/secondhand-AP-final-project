@@ -4,6 +4,7 @@ import com.secondhand.frontend.service.ApiException;
 import com.secondhand.frontend.service.ChatService;
 import com.secondhand.frontend.service.dto.MessageResponse;
 import com.secondhand.frontend.service.dto.StartConversationRequest;
+import com.secondhand.frontend.util.NavigationContext;
 import com.secondhand.frontend.util.SceneManager;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -30,6 +31,25 @@ public class StartConversationController {
     private Button sendButton;
 
     private final ChatService chatService = new ChatService();
+
+    /**
+     * Initializes the controller Automatically prefills the advertisement ID and
+     * sellers username if they were passed via NavigationContext from the ad details page
+     */
+    @FXML
+    public void initialize() {
+        Long targetAdId = NavigationContext.getTargetAdvertisementId();
+        String targetSeller = NavigationContext.getTargetSellerUsername();
+        // If data exists prefill and lock the fields
+        if (targetAdId != null && targetSeller != null) {
+            advertisementIdField.setText(String.valueOf(targetAdId));
+            sellerUsernameField.setText(targetSeller);
+            // Make fields read-only to prevent user tampering with the ad context
+            advertisementIdField.setEditable(false);
+            sellerUsernameField.setEditable(false);
+        }
+    }
+
 
     @FXML
     private void handleSend() {
@@ -74,7 +94,7 @@ public class StartConversationController {
             if (ex instanceof ApiException apiEx) {
                 showError(apiEx.getMessage());
             } else {
-                showError("Could not connect to the server Make sure the backend is running");
+                showError("Could not connect to the server. Make sure the backend is running.");
             }
         });
 
@@ -83,7 +103,7 @@ public class StartConversationController {
 
     @FXML
     private void handleBack() {
-        SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
+        SceneManager.switchTo("/com/secondhand/frontend/view/ad-detail-view.fxml", "Ad Details");
     }
 
     private Long parseLongOrNull(String text) {
