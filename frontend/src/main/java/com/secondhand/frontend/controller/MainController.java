@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -52,8 +53,47 @@ public class MainController implements Initializable {
             List<City> cities = ApiService.getAllCities();
             List<Category> categories = ApiService.getAllCategories();
 
+            City dummyCity = new City();
+            dummyCity.setId(null);
+            dummyCity.setName("All Cities");
+
+            Category dummyCategory = new Category();
+            dummyCategory.setId(null);
+            dummyCategory.setName("All Categories");
+
+            cityComboBox.getItems().add(dummyCity);
             cityComboBox.getItems().addAll(cities);
+
+            categoryComboBox.getItems().add(dummyCategory);
             categoryComboBox.getItems().addAll(categories);
+
+            cityComboBox.setConverter(new StringConverter<City>() {
+                @Override
+                public String toString(City city) {
+                    return (city == null) ? "All Cities" : city.getName();
+                }
+
+                @Override
+                public City fromString(String s) {
+                    return null;
+                }
+            });
+
+            categoryComboBox.setConverter(new StringConverter<Category>() {
+                @Override
+                public String toString(Category category) {
+                    return (category == null) ? "All Categories" : category.getName();
+                }
+
+                @Override
+                public Category fromString(String s) {
+                    return null;
+                }
+            });
+
+            cityComboBox.getSelectionModel().selectFirst();
+            categoryComboBox.getSelectionModel().selectFirst();
+
         } catch (Exception e) {
             System.err.println("Error loading filters: " + e.getMessage());
         }
@@ -123,14 +163,14 @@ public class MainController implements Initializable {
                 }
 
                 // category filtering
-                if (categoryComboBox.getValue() != null) {
+                if (categoryComboBox.getValue() != null && categoryComboBox.getValue().getId() != null) {
                     if (ad.getCategory() == null || !ad.getCategory().getId().equals(categoryComboBox.getValue().getId())) {
                         match = false;
                     }
                 }
 
                 // city filtering
-                if (cityComboBox.getValue() != null) {
+                if (cityComboBox.getValue() != null && cityComboBox.getValue().getId() != null) {
                     if (ad.getCity() == null || !ad.getCity().getId().equals(cityComboBox.getValue().getId())) {
                         match = false;
                     }
@@ -233,32 +273,8 @@ public class MainController implements Initializable {
         minPriceField.clear();
         maxPriceField.clear();
 
-        categoryComboBox.getSelectionModel().clearSelection();
-        cityComboBox.getSelectionModel().clearSelection();
-
-        categoryComboBox.setButtonCell(new ListCell<Category>() {
-            @Override
-            protected void updateItem(Category item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item != null) {
-                    setText("Category");
-                } else {
-                    setText(item.getName());
-                }
-            }
-        });
-
-        cityComboBox.setButtonCell(new ListCell<City>() {
-            @Override
-            protected void updateItem(City item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item != null) {
-                    setText("City");
-                } else {
-                    setText(item.getName());
-                }
-            }
-        });
+        categoryComboBox.getSelectionModel().selectFirst();
+        cityComboBox.getSelectionModel().selectFirst();
 
         loadAds();
     }

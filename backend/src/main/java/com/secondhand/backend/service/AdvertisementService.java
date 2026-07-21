@@ -1,7 +1,7 @@
 package com.secondhand.backend.service;
 
-import com.secondhand.backend.model.Advertisement;
-import com.secondhand.backend.model.AdvertisementStatus;
+import com.secondhand.backend.entity.Advertisement;
+import com.secondhand.backend.entity.AdvertisementStatus;
 import com.secondhand.backend.repository.AdvertisementRepository;
 import org.springframework.stereotype.Service;
 

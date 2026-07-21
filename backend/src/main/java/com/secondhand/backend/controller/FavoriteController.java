@@ -1,6 +1,6 @@
 package com.secondhand.backend.controller;
 
-import com.secondhand.backend.model.Favorite;
+import com.secondhand.backend.entity.Favorite;
 import com.secondhand.backend.service.FavoriteService;
 import org.springframework.web.bind.annotation.*;
 

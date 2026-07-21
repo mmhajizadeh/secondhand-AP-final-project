@@ -1,6 +1,6 @@
 package com.secondhand.backend.service;
 
-import com.secondhand.backend.model.Favorite;
+import com.secondhand.backend.entity.Favorite;
 import com.secondhand.backend.repository.FavoriteRepository;
 import org.springframework.stereotype.Service;
 

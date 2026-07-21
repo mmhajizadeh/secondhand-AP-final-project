@@ -1,4 +1,4 @@
-package com.secondhand.backend.model;
+package com.secondhand.backend.entity;
 
 import jakarta.persistence.*;
 

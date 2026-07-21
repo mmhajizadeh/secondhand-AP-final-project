@@ -1,6 +1,6 @@
 package com.secondhand.backend.controller;
 
-import com.secondhand.backend.model.City;
+import com.secondhand.backend.entity.City;
 import com.secondhand.backend.service.CityService;
 import org.springframework.web.bind.annotation.*;
 

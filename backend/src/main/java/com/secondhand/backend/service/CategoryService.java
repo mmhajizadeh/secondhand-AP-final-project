@@ -1,6 +1,6 @@
 package com.secondhand.backend.service;
 
-import com.secondhand.backend.model.Category;
+import com.secondhand.backend.entity.Category;
 import com.secondhand.backend.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 

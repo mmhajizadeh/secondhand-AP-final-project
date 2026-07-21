@@ -57,7 +57,7 @@ public class LoginController {
                     response.getToken(),
                     new CurrentUser(response.getUserId(), response.getUsername(), response.getFullName(), response.getRole())
             );
-            SceneManager.switchTo("/com/secondhand/frontend/view/home-placeholder-view.fxml", "Second-Hand Marketplace");
+            SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second-Hand Marketplace");
         });
         task.setOnFailed(event -> {
             loginButton.setDisable(false);
@@ -76,6 +76,12 @@ public class LoginController {
     private void goToRegister() {
         SceneManager.switchTo("/com/secondhand/frontend/view/register-view.fxml", "Register");
     }
+
+    @FXML
+    private void handleGuestLogin() {
+        com.secondhand.frontend.util.SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
+    }
+
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);

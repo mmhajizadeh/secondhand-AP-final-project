@@ -1,7 +1,7 @@
 package com.secondhand.backend.controller;
 
-import com.secondhand.backend.model.Advertisement;
-import com.secondhand.backend.model.AdvertisementStatus;
+import com.secondhand.backend.entity.Advertisement;
+import com.secondhand.backend.entity.AdvertisementStatus;
 import com.secondhand.backend.service.AdvertisementService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;

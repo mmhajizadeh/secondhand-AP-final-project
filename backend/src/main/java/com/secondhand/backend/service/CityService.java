@@ -1,6 +1,6 @@
 package com.secondhand.backend.service;
 
-import com.secondhand.backend.model.City;
+import com.secondhand.backend.entity.City;
 import com.secondhand.backend.repository.CityRepository;
 import org.springframework.stereotype.Service;
 

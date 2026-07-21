@@ -1,6 +1,6 @@
 package com.secondhand.backend.controller;
 
-import com.secondhand.backend.model.Category;
+import com.secondhand.backend.entity.Category;
 import com.secondhand.backend.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
