@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Main JavaFX entry point. Starts the application on the login screen.
+ * Main JavaFX entry point. Starts the application on the main view screen.
  */
 public class HelloApplication extends Application {
 
@@ -17,12 +17,16 @@ public class HelloApplication extends Application {
         SceneManager.setPrimaryStage(stage);
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                HelloApplication.class.getResource("/com/secondhand/frontend/view/login-view.fxml"));
+                HelloApplication.class.getResource("/com/secondhand/frontend/view/main-view.fxml"));
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root, 420, 420);
-        stage.setTitle("Login");
+        Scene scene = new Scene(root, 1200, 700);
+        stage.setTitle("Second Hand Market");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

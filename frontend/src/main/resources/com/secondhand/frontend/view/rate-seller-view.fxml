@@ -17,12 +17,12 @@
 
     <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Rate Seller"/>
 
-    <VBox spacing="4.0">
+    <VBox spacing="4.0" visible="false" managed="false">
         <Label text="Seller ID"/>
         <TextField fx:id="sellerIdField" promptText="Seller's user ID"/>
     </VBox>
 
-    <VBox spacing="4.0">
+    <VBox spacing="4.0" visible="false" managed="false">
         <Label text="Advertisement ID"/>
         <TextField fx:id="advertisementIdField" promptText="Advertisement ID"/>
     </VBox>

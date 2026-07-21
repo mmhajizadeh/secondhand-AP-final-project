@@ -3,8 +3,6 @@ import com.secondhand.frontend.service.ApiException;
 import com.secondhand.frontend.service.RatingService;
 import com.secondhand.frontend.service.dto.RatingRequest;
 import com.secondhand.frontend.service.dto.RatingResponse;
-import com.secondhand.frontend.util.NavigationContext;
-import com.secondhand.frontend.util.SceneManager;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -42,17 +40,9 @@ public class RateSellerController {
         scoreChoiceBox.getItems().addAll(1, 2, 3, 4, 5);
         scoreChoiceBox.setValue(5);
 
-        Long targetAdId = NavigationContext.getTargetAdvertisementId();
-        if (targetAdId != null) {
-            advertisementIdField.setText(String.valueOf(targetAdId));
-        }
+        Long adId = com.secondhand.frontend.util.NavigationContext.getTargetAdvertisementId();
+        if (adId != null) advertisementIdField.setText(adId.toString());
     }
-
-    @FXML
-    private void handleBack() {
-        SceneManager.switchTo("/com/secondhand/frontend/view/ad-detail-view.fxml", "Ad Details");
-    }
-
 
     @FXML
     private void handleSubmit() {
@@ -93,7 +83,6 @@ public class RateSellerController {
             submitButton.setDisable(false);
             showSuccess("Rating submitted successfully!!");
             clearForm();
-            SceneManager.switchTo("/com/secondhand/frontend/view/ad-detail-view.fxml", "Ad Details");
         });
 
         task.setOnFailed(event -> {
