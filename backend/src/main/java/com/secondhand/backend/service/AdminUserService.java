@@ -5,6 +5,7 @@ import com.secondhand.backend.entity.User;
 import com.secondhand.backend.entity.UserStatus;
 import com.secondhand.backend.exception.ResourceNotFoundException;
 import com.secondhand.backend.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 public class AdminUserService {
 
     private final UserRepository userRepository;
+
     public AdminUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -29,8 +31,15 @@ public class AdminUserService {
     }
 
     public UserSummaryResponse blockUser(Long userId) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getUsername().equalsIgnoreCase(currentUsername)) {
+            throw new IllegalArgumentException("You cannot block your own admin account!");
+        }
+
         user.setStatus(UserStatus.BLOCKED);
         return toSummary(userRepository.save(user));
     }
