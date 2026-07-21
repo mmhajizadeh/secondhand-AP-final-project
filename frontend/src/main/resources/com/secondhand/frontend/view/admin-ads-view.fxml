@@ -23,14 +23,19 @@
             </HBox>
         </VBox>
     </top>
+
     <!-- لیست آگهی‌ها -->
     <center>
-        <VBox padding="20.0" spacing="10.0" style="-fx-background-color: #ECF0F1;">
-            <Label text="Review the following pending advertisements:" textFill="#34495E">
-                <font><Font name="System Bold" size="14.0" /></font>
-            </Label>
-            <!-- استفاده از ListView برای ساخت لیست تک‌ستونه -->
-            <ListView fx:id="pendingAdsListView" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5;" />
+        <VBox spacing="10.0" style="-fx-background-color: #ECF0F1;">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+                <Label text="Review the following pending advertisements:" textFill="#34495E">
+                    <font><Font name="System Bold" size="14.0" /></font>
+                </Label>
+                <ListView fx:id="pendingAdsListView" style="-fx-background-radius: 5;" VBox.vgrow="ALWAYS" />
+            </children>
         </VBox>
     </center>
 </BorderPane>

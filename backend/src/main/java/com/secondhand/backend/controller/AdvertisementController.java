@@ -141,4 +141,33 @@ public class AdvertisementController {
     public void deleteAd(@PathVariable Long id, Authentication authentication) {
         advertisementService.deleteAdvertisement(id, authentication.getName());
     }
+
+    /**
+     * Fetches all pending advertisements waiting for admin review.
+     * Endpoint: GET /api/advertisements/pending
+     */
+    @GetMapping("/pending")
+    public List<Advertisement> getPendingAds() {
+        return advertisementService.getAllAdvertisementsForAdmin().stream()
+                .filter(ad -> ad.getStatus() == AdvertisementStatus.PENDING)
+                .toList();
+    }
+
+    /**
+     * Approves a pending advertisement by changing its status to ACTIVE.
+     * Endpoint: PUT /api/advertisements/{id}/approve
+     */
+    @PutMapping("/{id}/approve")
+    public Advertisement approveAd(@PathVariable Long id) {
+        return advertisementService.updateAdvertisementStatus(id, AdvertisementStatus.ACTIVE);
+    }
+
+    /**
+     * Rejects a pending advertisement by changing its status to REJECTED.
+     * Endpoint: PUT /api/advertisements/{id}/reject
+     */
+    @PutMapping("/{id}/reject")
+    public Advertisement rejectAd(@PathVariable Long id) {
+        return advertisementService.updateAdvertisementStatus(id, AdvertisementStatus.REJECTED);
+    }
 }
