@@ -1,5 +1,6 @@
 package com.secondhand.frontend.service;
 
+import com.secondhand.frontend.service.dto.AdminStatsResponse;
 import com.secondhand.frontend.service.dto.UserSummaryResponse;
 
 import java.net.http.HttpRequest;
@@ -22,6 +23,17 @@ public class AdminService {
 
         return ApiClient.mapper().readValue(response.body(),
                 ApiClient.mapper().getTypeFactory().constructCollectionType(List.class, UserSummaryResponse.class));
+    }
+
+    public AdminStatsResponse getAdminStats() throws ApiException, Exception {
+        HttpRequest request = ApiClient.requestBuilder("/admin/users/stats")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = ApiClient.send(request);
+        ApiClient.throwIfError(response);
+
+        return ApiClient.mapper().readValue(response.body(), AdminStatsResponse.class);
     }
 
     public UserSummaryResponse blockUser(Long userId) throws ApiException, Exception {

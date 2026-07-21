@@ -1,22 +1,21 @@
 package com.secondhand.frontend.controller;
+
 import com.secondhand.frontend.service.ApiException;
 import com.secondhand.frontend.service.RatingService;
 import com.secondhand.frontend.service.dto.RatingRequest;
 import com.secondhand.frontend.service.dto.RatingResponse;
+import com.secondhand.frontend.util.NavigationContext;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+
 public class RateSellerController {
 
     @FXML
-    private TextField sellerIdField;
-
-    @FXML
-    private TextField advertisementIdField;
+    private Label infoLabel;
 
     @FXML
     private ChoiceBox<Integer> scoreChoiceBox;
@@ -35,28 +34,33 @@ public class RateSellerController {
 
     private final RatingService ratingService = new RatingService();
 
+    private Long sellerId;
+    private Long advertisementId;
+
     @FXML
     public void initialize() {
         scoreChoiceBox.getItems().addAll(1, 2, 3, 4, 5);
         scoreChoiceBox.setValue(5);
 
-        Long adId = com.secondhand.frontend.util.NavigationContext.getTargetAdvertisementId();
-        if (adId != null) advertisementIdField.setText(adId.toString());
+        // دریافت مستقیم آگهی و فروشنده از NavigationContext
+        this.advertisementId = NavigationContext.getTargetAdvertisementId();
+        this.sellerId = NavigationContext.getTargetSellerId();
+
+        if (advertisementId != null) {
+            infoLabel.setText("Rating for Advertisement #" + advertisementId);
+        } else {
+            infoLabel.setText("Rate Seller");
+        }
     }
 
     @FXML
     private void handleSubmit() {
         hideMessages();
-        Long sellerId = parseLongOrNull(sellerIdField.getText());
-        Long advertisementId = parseLongOrNull(advertisementIdField.getText());
+
         Integer score = scoreChoiceBox.getValue();
 
-        if (sellerId == null) {
-            showError("Please enter a valid seller ID");
-            return;
-        }
-        if (advertisementId == null) {
-            showError("Please enter a valid advertisement ID");
+        if (sellerId == null || advertisementId == null) {
+            showError("No advertisement or seller selected. Please rate from advertisement page.");
             return;
         }
         if (score == null) {
@@ -68,6 +72,7 @@ public class RateSellerController {
         if (comment != null && comment.isEmpty()) {
             comment = null;
         }
+
         RatingRequest requestBody = new RatingRequest(sellerId, advertisementId, score, comment);
 
         submitButton.setDisable(true);
@@ -81,7 +86,7 @@ public class RateSellerController {
 
         task.setOnSucceeded(event -> {
             submitButton.setDisable(false);
-            showSuccess("Rating submitted successfully!!");
+            showSuccess("Rating submitted successfully!");
             clearForm();
         });
 
@@ -97,20 +102,8 @@ public class RateSellerController {
 
         new Thread(task).start();
     }
-    private Long parseLongOrNull(String text) {
-        if (text == null || text.isBlank()) {
-            return null;
-        }
-        try {
-            return Long.parseLong(text.trim());
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
 
     private void clearForm() {
-        sellerIdField.clear();
-        advertisementIdField.clear();
         commentField.clear();
         scoreChoiceBox.setValue(5);
     }
