@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.secondhand.frontend.model.Advertisement;
 import com.secondhand.frontend.model.Category;
 import com.secondhand.frontend.model.City;
+import com.secondhand.frontend.session.SessionManager;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -84,5 +85,60 @@ public class ApiService {
         }
 
         return mapper.readValue(response.body(), new TypeReference<List<Category>>() {});
+    }
+
+    /**
+     * Fetches a list of pending advertisements (Admin only).
+     */
+    public static List<Advertisement> getPendingAds() throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/pending"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error fetching pending ads: " +  response.statusCode());
+        }
+
+        return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
+    }
+
+    /**
+     * Approves a pending advertisement (Admin only).
+     */
+    public static void approveAd(Long adId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId + "/approve"))
+                .header("Authorization", "Bearer" + token)
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to approved ad: " +  response.statusCode());
+        }
+    }
+
+    /**
+     * Rejects a pending advertisement (Admin only).
+     */
+    public static void rejectAd(Long adId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId + "/reject"))
+                .header("Authorization", "Bearer" + token)
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to reject ad: " +  response.statusCode());
+        }
     }
 }
