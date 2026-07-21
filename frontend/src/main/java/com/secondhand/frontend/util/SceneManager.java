@@ -3,6 +3,7 @@ package com.secondhand.frontend.util;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -32,6 +33,22 @@ public class SceneManager {
             primaryStage.show();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load screen: " + fxmlPath, e);
+        }
+    }
+
+    public static void showAsPopup(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

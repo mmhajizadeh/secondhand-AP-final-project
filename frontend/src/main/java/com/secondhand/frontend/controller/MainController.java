@@ -229,4 +229,17 @@ public class MainController implements Initializable {
     public void onConversationsNavAction() {
         SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
     }
+
+    @FXML
+    public void onClearFiltersAction() {
+        searchField.clear();
+        minPriceField.clear();
+        maxPriceField.clear();
+        categoryComboBox.getSelectionModel().clearSelection();
+        cityComboBox.getSelectionModel().clearSelection();
+        categoryComboBox.setValue(null);
+        cityComboBox.setValue(null);
+
+        loadAds();
+    }
 }

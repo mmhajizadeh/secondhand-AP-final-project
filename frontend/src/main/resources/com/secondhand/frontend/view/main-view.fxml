@@ -64,6 +64,7 @@
                      <children>
                         <TextField fx:id="minPriceField" promptText="Min Price" prefWidth="120.0" />
                         <TextField fx:id="maxPriceField" promptText="Max Price" prefWidth="120.0" />
+                        <Button mnemonicParsing="false" onAction="#onClearFiltersAction" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" text="Clear Filters" />
                      </children>
                   </HBox>
                </children>

@@ -39,6 +39,9 @@ public class RateSellerController {
     public void initialize() {
         scoreChoiceBox.getItems().addAll(1, 2, 3, 4, 5);
         scoreChoiceBox.setValue(5);
+
+        Long adId = com.secondhand.frontend.util.NavigationContext.getTargetAdvertisementId();
+        if (adId != null) advertisementIdField.setText(adId.toString());
     }
 
     @FXML

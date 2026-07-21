@@ -63,7 +63,7 @@ public class ConversationsListController {
 
     @FXML
     private void handleBack() {
-        SceneManager.switchTo("/com/secondhand/frontend/view/home-placeholder-view.fxml", "Second-Hand Marketplace");
+        SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second-Hand Marketplace");
     }
 
     private void openConversation(ConversationResponse conversation) {

@@ -49,7 +49,7 @@ public class AdDetailController implements Initializable {
         if (currentAd != null) {
             NavigationContext.setTargetAdvertisementId(currentAd.getId());
             NavigationContext.setTargetSellerUsername(currentAd.getOwnerUsername());
-            SceneManager.switchTo("/com/secondhand/frontend/view/start-conversation-view.fxml", "Start Conversation");
+            SceneManager.showAsPopup("/com/secondhand/frontend/view/start-conversation-view.fxml", "Start Conversation");
         }
     }
 
@@ -57,7 +57,7 @@ public class AdDetailController implements Initializable {
     private void handleRateSeller() {
         if (currentAd != null) {
             NavigationContext.setTargetAdvertisementId(currentAd.getId());
-            SceneManager.switchTo("/com/secondhand/frontend/view/rate-seller-view.fxml", "Rate Seller");
+            SceneManager.showAsPopup("/com/secondhand/frontend/view/rate-seller-view.fxml", "Rate Seller");
         }
     }
 }

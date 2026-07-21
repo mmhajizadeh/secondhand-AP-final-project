@@ -32,6 +32,15 @@ public class StartConversationController {
     private final ChatService chatService = new ChatService();
 
     @FXML
+    public void initialize() {
+        Long adId = com.secondhand.frontend.util.NavigationContext.getTargetAdvertisementId();
+        String seller = com.secondhand.frontend.util.NavigationContext.getTargetSellerUsername();
+
+        if (adId != null) advertisementIdField.setText(adId.toString());
+        if (seller != null) sellerUsernameField.setText(seller);
+    }
+
+    @FXML
     private void handleSend() {
         hideError();
 
@@ -79,11 +88,6 @@ public class StartConversationController {
         });
 
         new Thread(task).start();
-    }
-
-    @FXML
-    private void handleBack() {
-        SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
     }
 
     private Long parseLongOrNull(String text) {
