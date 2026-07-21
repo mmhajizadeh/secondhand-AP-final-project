@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
 public class LoginController {
 
     @FXML
@@ -56,7 +57,7 @@ public class LoginController {
                     response.getToken(),
                     new CurrentUser(response.getUserId(), response.getUsername(), response.getFullName(), response.getRole())
             );
-            SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
+            SceneManager.switchTo("/com/secondhand/frontend/view/home-placeholder-view.fxml", "Second-Hand Marketplace");
         });
         task.setOnFailed(event -> {
             loginButton.setDisable(false);

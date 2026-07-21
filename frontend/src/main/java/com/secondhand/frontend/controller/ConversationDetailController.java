@@ -17,6 +17,11 @@ import javafx.scene.control.TextField;
 
 import java.util.List;
 
+/**
+ * Controller for the conversation detail screen
+ * Handles loading and displaying messages for a specific chat conversation
+ * as well as sending new messages asynchronously
+ */
 public class ConversationDetailController {
 
     @FXML
@@ -56,7 +61,6 @@ public class ConversationDetailController {
                 }
             }
         });
-
         if (conversationId != null) {
             loadMessages();
         }
@@ -77,20 +81,17 @@ public class ConversationDetailController {
         }
 
         sendButton.setDisable(true);
-
         Task<MessageResponse> task = new Task<>() {
             @Override
             protected MessageResponse call() throws Exception {
                 return chatService.sendMessage(conversationId, new SendMessageRequest(content));
             }
         };
-
         task.setOnSucceeded(event -> {
             sendButton.setDisable(false);
             newMessageField.clear();
-            loadMessages();
+            loadMessages(); // Reload message log to show the newly added message
         });
-
         task.setOnFailed(event -> {
             sendButton.setDisable(false);
             Throwable ex = task.getException();
@@ -103,7 +104,6 @@ public class ConversationDetailController {
 
         new Thread(task).start();
     }
-
     @FXML
     private void handleBack() {
         SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
@@ -116,9 +116,7 @@ public class ConversationDetailController {
                 return chatService.getMessages(conversationId);
             }
         };
-
         task.setOnSucceeded(event -> messagesListView.getItems().setAll(task.getValue()));
-
         task.setOnFailed(event -> {
             Throwable ex = task.getException();
             if (ex instanceof ApiException apiEx) {
@@ -130,12 +128,10 @@ public class ConversationDetailController {
 
         new Thread(task).start();
     }
-
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }
-
     private void hideError() {
         errorLabel.setVisible(false);
     }

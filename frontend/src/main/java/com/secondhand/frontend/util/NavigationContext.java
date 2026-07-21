@@ -1,23 +1,23 @@
 package com.secondhand.frontend.util;
 
 /**
- * Tiny holder for passing the currently-open conversation id between the
- * conversations list screen and the conversation detail screen, since
- * SceneManager.switchTo() only takes an FXML path (no constructor
- * parameters). Set before navigating, read in the destination controllers
- * initialize().
+ * Tiny holder for passing navigation contexts (conversation IDs, ad IDs, seller details)
+ * between scenes and popups.
  */
 public class NavigationContext {
 
+    // Conversation Context
     private static Long currentConversationId;
     private static String currentConversationTitle;
 
+    // Advertisement & Seller Context
     private static Long targetAdvertisementId;
     private static String targetSellerUsername;
 
     private NavigationContext() {
     }
 
+    // Conversation Methods
     public static void setCurrentConversation(Long conversationId, String title) {
         currentConversationId = conversationId;
         currentConversationTitle = title;
@@ -31,19 +31,28 @@ public class NavigationContext {
         return currentConversationTitle;
     }
 
+    // Advertisement & Seller Methods
     public static Long getTargetAdvertisementId() {
         return targetAdvertisementId;
     }
 
-    public static void setTargetAdvertisementId(Long targetAdvertisementId) {
-        NavigationContext.targetAdvertisementId = targetAdvertisementId;
+    public static void setTargetAdvertisementId(Long id) {
+        targetAdvertisementId = id;
     }
 
     public static String getTargetSellerUsername() {
         return targetSellerUsername;
     }
 
-    public static void setTargetSellerUsername(String targetSellerUserUsername) {
-        NavigationContext.targetSellerUsername = targetSellerUserUsername;
+    public static void setTargetSellerUsername(String username) {
+        targetSellerUsername = username;
+    }
+
+    // Clear Context
+    public static void clear() {
+        currentConversationId = null;
+        currentConversationTitle = null;
+        targetAdvertisementId = null;
+        targetSellerUsername = null;
     }
 }
