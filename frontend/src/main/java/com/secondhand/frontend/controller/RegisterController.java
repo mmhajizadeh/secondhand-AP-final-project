@@ -76,7 +76,7 @@ public class RegisterController {
                     response.getToken(),
                     new CurrentUser(response.getUserId(), response.getUsername(), response.getFullName(), response.getRole())
             );
-            SceneManager.switchTo("/com/secondhand/frontend/view/home-placeholder-view.fxml", "Second-Hand Marketplace");
+            SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second-Hand Marketplace");
         });
         task.setOnFailed(event -> {
             registerButton.setDisable(false);

@@ -27,10 +27,21 @@ public class SceneManager {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle(title);
-            primaryStage.show();
+
+            if (primaryStage != null) {
+                double width = 950;
+                double height = 650;
+
+                if (primaryStage.getScene() != null) {
+                    width = primaryStage.getScene().getWidth();
+                    height = primaryStage.getScene().getHeight();
+                }
+
+                Scene scene = new Scene(root,  width, height);
+                primaryStage.setScene(scene);
+                primaryStage.setTitle(title);
+                primaryStage.show();
+            }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load screen: " + fxmlPath, e);
         }

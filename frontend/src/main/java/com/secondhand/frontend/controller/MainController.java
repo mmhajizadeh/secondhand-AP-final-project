@@ -10,10 +10,7 @@ import com.secondhand.frontend.util.SceneManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 
@@ -235,10 +232,33 @@ public class MainController implements Initializable {
         searchField.clear();
         minPriceField.clear();
         maxPriceField.clear();
+
         categoryComboBox.getSelectionModel().clearSelection();
         cityComboBox.getSelectionModel().clearSelection();
-        categoryComboBox.setValue(null);
-        cityComboBox.setValue(null);
+
+        categoryComboBox.setButtonCell(new ListCell<Category>() {
+            @Override
+            protected void updateItem(Category item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item != null) {
+                    setText("Category");
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+
+        cityComboBox.setButtonCell(new ListCell<City>() {
+            @Override
+            protected void updateItem(City item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item != null) {
+                    setText("City");
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
 
         loadAds();
     }

@@ -56,7 +56,7 @@ public class LoginController {
                     response.getToken(),
                     new CurrentUser(response.getUserId(), response.getUsername(), response.getFullName(), response.getRole())
             );
-            SceneManager.switchTo("/com/secondhand/frontend/view/home-placeholder-view.fxml", "Second-Hand Marketplace");
+            SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
         });
         task.setOnFailed(event -> {
             loginButton.setDisable(false);
