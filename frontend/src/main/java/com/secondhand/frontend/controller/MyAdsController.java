@@ -2,11 +2,13 @@ package com.secondhand.frontend.controller;
 
 import com.secondhand.frontend.model.Advertisement;
 import com.secondhand.frontend.service.ApiService;
+import com.secondhand.frontend.util.NavigationContext;
 import com.secondhand.frontend.util.SceneManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,25 +43,32 @@ public class MyAdsController implements Initializable {
                     setGraphic(null);
                 } else {
                     HBox root = new HBox(15);
-                    root.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-border-color: #BDC3C7; -fx-border-width: 0 0 1 0;");
-                    root.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    root.setStyle("-fx-padding: 15; -fx-background-color: transparent; -fx-border-color: #BDC3C7; -fx-border-width: 0 0 1 0;");
+                    root.setAlignment(Pos.CENTER_LEFT);
 
-                    Label titleLabel = new Label(ad.getTitle() + " (" + ad.getStatus() + ")");
-                    titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2C3E50;");
+                    Label titleLabel = new Label(ad.getTitle() + " (Sattus: " + ad.getStatus() + ")");
+                    titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
                     Region spacer = new Region();
                     HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                    Button soldBtn = new Button("✔ Mark Sold");
-                    soldBtn.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-cursor: hand;");
-                    soldBtn.setOnAction(e -> handleMarkSold(ad));
-                    soldBtn.setDisable("SOLD".equals(ad.getStatus()));
+                    // View Ad
+                    Button viewBtn = new Button("View");
+                    viewBtn.getStyleClass().add("button");
+                    viewBtn.setOnAction(e -> handleViewAd(ad));
 
-                    Button deleteBtn = new Button("✖ Delete");
+                    // Sold button
+                    Button soldBtn = new Button("Mark Sold");
+                    soldBtn.getStyleClass().add("button");
+                    soldBtn.setOnAction(e -> handleMarkSold(ad));
+                    soldBtn.setDisable(!"ACTIVE".equals(ad.getStatus()) || "SOLD".equals(ad.getStatus()));
+
+                    Button deleteBtn = new Button("Delete");
                     deleteBtn.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-cursor: hand;");
                     deleteBtn.setOnAction(e -> handleDelete(ad));
+                    deleteBtn.setDisable("SOLD".equals(ad.getStatus()));
 
-                    root.getChildren().addAll(titleLabel, spacer, soldBtn, deleteBtn);
+                    root.getChildren().addAll(titleLabel, spacer, viewBtn, soldBtn, deleteBtn);
                     setGraphic(root);
                 }
             }
@@ -73,6 +82,12 @@ public class MyAdsController implements Initializable {
         } catch (Exception e) {
             showError("Failed to load your ads: " + e.getMessage());
         }
+    }
+
+    private void handleViewAd(Advertisement ad) {
+        AdDetailController.setSelectedAd(ad);
+        NavigationContext.setTargetAdvertisementId(ad.getId());
+        SceneManager.showAsPopup("/com/secondhand/frontend/view/ad-detail-view.fxml", "Advertisement Details");
     }
 
     private void handleMarkSold(Advertisement ad) {
@@ -93,6 +108,11 @@ public class MyAdsController implements Initializable {
         } catch (Exception e) {
             showError("Failed to delete ad: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleRefresh() {
+        loadMyAds();
     }
 
     @FXML

@@ -217,6 +217,13 @@ public class ApiService {
         return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
     }
 
+    /**
+     * Updates the status of a specific advertisement to SOLD.
+     * This action indicates that the item has been successfully traded and is no longer available.
+     *
+     * @param adId The unique database identifier of the advertisement.
+     * @throws Exception if the network request fails, is unauthorized, or the backend returns an error.
+     */
     public static void markAdAsSold(Long adId) throws Exception {
         String token = SessionManager.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()
@@ -232,6 +239,12 @@ public class ApiService {
         }
     }
 
+    /**
+     * Permanently deletes a specific advertisement from the system.
+     *
+     * @param adId The unique database identifier of the advertisement to be deleted.
+     * @throws Exception if the network request fails, is unauthorized, or the backend returns an error.
+     */
     public static void deleteAd(Long adId) throws Exception {
         String token = SessionManager.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()
