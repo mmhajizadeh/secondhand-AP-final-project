@@ -259,4 +259,69 @@ public class ApiService {
             throw new RuntimeException("Failed to delete ad: " + response.statusCode());
         }
     }
+
+    /**
+     * Retrieves the list of favorite advertisements for the logged-in user.
+     *
+     * @return A list of {@link Advertisement} objects marked as favorite.
+     * @throws Exception if the network request fails, is unauthorized, or JSON parsing errors occur.
+     */
+    public static List<Advertisement> getFavorites() throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/favorites"))
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error fetching favorites: " +  response.statusCode());
+        }
+
+        return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
+    }
+
+    /**
+     * Adds a specific advertisement to the current user's favorites list.
+     *
+     * @param adId The unique database identifier of the advertisement.
+     * @throws Exception if the request fails or the user is unauthorized.
+     */
+    public static void addFavorite(Long adId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/favorites/" + adId))
+                .header("Authorization", "Bearer " + token)
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
+            throw new RuntimeException("Failed to add to favorites: " + response.statusCode());
+        }
+    }
+
+    /**
+     * Removes a specific advertisement from the current user's favorites list.
+     *
+     * @param adId The unique database identifier of the advertisement.
+     * @throws Exception if the request fails or the user is unauthorized.
+     */
+    public static void removeFavorite(Long adId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/favorites/" + adId))
+                .header("Authorization", "Bearer " + token)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200 && response.statusCode() != 204) {
+            throw new RuntimeException("Failed to remove from favorites: " + response.statusCode());
+        }
+    }
 }

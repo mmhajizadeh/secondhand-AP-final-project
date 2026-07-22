@@ -1,6 +1,10 @@
 package com.secondhand.frontend.controller;
 
+import com.secondhand.frontend.service.ApiService;
+import com.secondhand.frontend.session.SessionManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -32,16 +36,19 @@ public class AdCardController {
     private Button favoriteButton;
 
     private boolean isFavorite = false;
+    private Long currentAdId;
 
     /**
      * Populates the advertisement card with data retrieved from the server.
      *
+     * @param adId         The unique identifier of the advertisement.
      * @param title        The title of the advertisement.
      * @param price        The formatted price string.
      * @param locationTime The formatted string containing the city and time elapsed.
      * @param imageUrl     The URL or relative path to the advertisement's image.
      */
-    public void setAdData(String title, String price, String locationTime, String imageUrl) {
+    public void setAdData(Long adId, String title, String price, String locationTime, String imageUrl) {
+        this.currentAdId = adId;
         titleLabel.setText(title);
         priceLabel.setText(price);
         locationTimeLabel.setText(locationTime);
@@ -63,13 +70,35 @@ public class AdCardController {
      */
     @FXML
     public void handleFavoriteClick() {
-        isFavorite = !isFavorite;
-        if (isFavorite) {
-            favoriteButton.setText("♥");
-            favoriteButton.setStyle("-fx-text-fill: red;");
-        } else {
-            favoriteButton.setText("♡");
-            favoriteButton.setStyle("-fx-text-fill: black;");
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            showAlert("Please login to add favorites.");
+            return;
         }
+
+        try {
+            if (isFavorite) {
+                ApiService.addFavorite(currentAdId);
+                isFavorite = true;
+                favoriteButton.setText("♥");
+                favoriteButton.setStyle("-fx-text-fill: red;");
+            } else {
+                ApiService.removeFavorite(currentAdId);
+                isFavorite = false;
+                favoriteButton.setText("♡");
+                favoriteButton.setStyle("-fx-text-fill: black;");
+            }
+        } catch (Exception e) {
+            showAlert("Failed to update favorites: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Favorites");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 }
