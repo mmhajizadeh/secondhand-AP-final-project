@@ -18,6 +18,7 @@ public class Advertisement {
     private List<String> images;
     private City city;
     private Category category;
+    private String status;
 
     public Long getId() {
         return id;
@@ -81,5 +82,13 @@ public class Advertisement {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

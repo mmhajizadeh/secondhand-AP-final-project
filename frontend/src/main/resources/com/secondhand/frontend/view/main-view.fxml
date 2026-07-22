@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.secondhand.frontend.controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.secondhand.frontend.controller.MainController">
 
    <!-- 1. Header Area (Top) -->
    <top>
@@ -39,7 +39,8 @@
          <children>
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAdsNavAction" style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="📢 All Ads" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onNewAdNavAction" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="➕ New Ad" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFavoritesNavAction" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="❤️ Favorites" />
+            <Button layoutX="20.0" layoutY="66.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onMyAdsNavAction" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="📣 My Ads" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFavoritesNavAction" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="❤ Favorites" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConversationsNavAction" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;" text="💬 Conversations" />
          </children>
       </VBox>
@@ -50,9 +51,9 @@
       <VBox spacing="10.0" BorderPane.alignment="CENTER">
          <children>
             <!-- Search & Filters Container -->
-            <VBox style="-fx-background-color: #ECF0F1; -fx-background-radius: 8;" spacing="10.0">
+            <VBox spacing="10.0" style="-fx-background-color: #ECF0F1; -fx-background-radius: 8;">
                <children>
-                  <HBox spacing="10.0" alignment="CENTER_LEFT">
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
                         <TextField fx:id="searchField" promptText="Search items..." HBox.hgrow="ALWAYS" />
                         <ComboBox fx:id="categoryComboBox" prefWidth="130.0" promptText="Category" />
@@ -60,10 +61,10 @@
                         <Button mnemonicParsing="false" onAction="#onSearchAction" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-cursor: hand;" text="Search" />
                      </children>
                   </HBox>
-                  <HBox spacing="10.0" alignment="CENTER_LEFT">
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <TextField fx:id="minPriceField" promptText="Min Price" prefWidth="120.0" />
-                        <TextField fx:id="maxPriceField" promptText="Max Price" prefWidth="120.0" />
+                        <TextField fx:id="minPriceField" prefWidth="120.0" promptText="Min Price" />
+                        <TextField fx:id="maxPriceField" prefWidth="120.0" promptText="Max Price" />
                         <Button mnemonicParsing="false" onAction="#onClearFiltersAction" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" text="Clear Filters" />
                      </children>
                   </HBox>

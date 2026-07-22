@@ -262,6 +262,15 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    public void onMyAdsNavAction() {
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            showErrorAlert("Please login to view your ads.");
+            return;
+        }
+        SceneManager.switchTo("/com/secondhand/frontend/view/my-ads-view.fxml", "My Ads");
+    }
+
+    @FXML
     public void onFavoritesNavAction() {
         System.out.println("Opening Favorites View...");
     }

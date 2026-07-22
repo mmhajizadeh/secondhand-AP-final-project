@@ -170,4 +170,16 @@ public class AdvertisementController {
     public Advertisement rejectAd(@PathVariable Long id) {
         return advertisementService.updateAdvertisementStatus(id, AdvertisementStatus.REJECTED);
     }
+
+    /**
+     * Fetches all advertisements owned by the currently authenticated user.
+     * Endpoint: GET /api/advertisements/my
+     *
+     * @param authentication The security context containing the logged-in user's details.
+     * @return A JSON array containing the user's {@link Advertisement} objects.
+     */
+    @GetMapping("/my")
+    public List<Advertisement> getMyAds(Authentication authentication) {
+        return advertisementService.getAdsByOwnerUsername(authentication.getName());
+    }
 }

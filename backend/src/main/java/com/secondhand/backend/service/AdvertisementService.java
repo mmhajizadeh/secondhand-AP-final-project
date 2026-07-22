@@ -147,4 +147,15 @@ public class AdvertisementService {
 
         advertisementRepository.delete(existingAd);
     }
+
+    /**
+     * Retrieves all advertisements owned by a specific user.
+     * This ensures users can only query their own data for their dashboard.
+     *
+     * @param username The exact username of the advertisement owner.
+     * @return A list of {@link Advertisement} objects belonging to the user.
+     */
+    public List<Advertisement> getAdsByOwnerUsername(String username) {
+        return advertisementRepository.findByOwnerUsername(username);
+    }
 }

@@ -191,4 +191,59 @@ public class ApiService {
             throw new RuntimeException("Failed to create ad: " +  response.statusCode());
         }
     }
+
+    /**
+     * Fetches advertisements strictly owned by the currently logged-in user.
+     * The backend securely identifies the user via the provided JWT token.
+     *
+     * @return A list of {@link Advertisement} objects belonging to the user.
+     * @throws Exception if the network request fails, is unauthorized, or JSON parsing errors occur.
+     */
+    public static List<Advertisement> getMyAds() throws Exception {
+        String token = SessionManager.getInstance().getToken();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/my"))
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error fetching user  ads: " +  response.statusCode());
+        }
+
+        return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
+    }
+
+    public static void markAdAsSold(Long adId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId + "/status?status=SOLD"))
+                .header("Authorization", "Bearer " + token)
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to mark ad as sold: " +  response.statusCode());
+        }
+    }
+
+    public static void deleteAd(Long adId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId))
+                .header("Authorization", "Bearer " + token)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to delete ad: " + response.statusCode());
+        }
+    }
 }
