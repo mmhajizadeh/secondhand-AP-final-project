@@ -4,21 +4,18 @@ import com.secondhand.frontend.service.ApiException;
 import com.secondhand.frontend.service.ChatService;
 import com.secondhand.frontend.service.dto.MessageResponse;
 import com.secondhand.frontend.service.dto.StartConversationRequest;
+import com.secondhand.frontend.util.NavigationContext;
 import com.secondhand.frontend.util.SceneManager;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 
 public class StartConversationController {
 
     @FXML
-    private TextField sellerUsernameField;
-
-    @FXML
-    private TextField advertisementIdField;
+    private Label targetInfoLabel;
 
     @FXML
     private TextArea messageField;
@@ -31,29 +28,39 @@ public class StartConversationController {
 
     private final ChatService chatService = new ChatService();
 
+    private Long advertisementId;
+    private String sellerUsername;
+
     @FXML
     public void initialize() {
-        Long adId = com.secondhand.frontend.util.NavigationContext.getTargetAdvertisementId();
-        String seller = com.secondhand.frontend.util.NavigationContext.getTargetSellerUsername();
+        // خواندن اطلاعات آگهی و فروشنده مستقیم از Context
+        this.advertisementId = NavigationContext.getTargetAdvertisementId();
+        this.sellerUsername = NavigationContext.getTargetSellerUsername();
 
-        if (adId != null) advertisementIdField.setText(adId.toString());
-        if (seller != null) sellerUsernameField.setText(seller);
+        // نمایش اطلاعات بالای کادر متن
+        if (sellerUsername != null && advertisementId != null) {
+            targetInfoLabel.setText("To seller: " + sellerUsername + " (Ad #" + advertisementId + ")");
+        } else if (sellerUsername != null) {
+            targetInfoLabel.setText("To seller: " + sellerUsername);
+        } else if (advertisementId != null) {
+            targetInfoLabel.setText("Regarding Ad #" + advertisementId);
+        } else {
+            targetInfoLabel.setText("Start a new conversation");
+        }
     }
 
     @FXML
     private void handleSend() {
         hideError();
 
-        String sellerUsername = sellerUsernameField.getText() == null ? "" : sellerUsernameField.getText().trim();
-        Long advertisementId = parseLongOrNull(advertisementIdField.getText());
         String content = messageField.getText() == null ? "" : messageField.getText().trim();
 
-        if (sellerUsername.isEmpty()) {
-            showError("Please enter the seller's username");
+        if (sellerUsername == null || sellerUsername.isBlank()) {
+            showError("Seller information is missing. Please open chat from the advertisement page.");
             return;
         }
         if (advertisementId == null) {
-            showError("Please enter a valid advertisement ID");
+            showError("Advertisement ID is missing. Please open chat from the advertisement page.");
             return;
         }
         if (content.isEmpty()) {
@@ -88,17 +95,6 @@ public class StartConversationController {
         });
 
         new Thread(task).start();
-    }
-
-    private Long parseLongOrNull(String text) {
-        if (text == null || text.isBlank()) {
-            return null;
-        }
-        try {
-            return Long.parseLong(text.trim());
-        } catch (NumberFormatException e) {
-            return null;
-        }
     }
 
     private void showError(String message) {

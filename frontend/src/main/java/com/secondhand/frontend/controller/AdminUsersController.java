@@ -2,6 +2,7 @@ package com.secondhand.frontend.controller;
 
 import com.secondhand.frontend.service.AdminService;
 import com.secondhand.frontend.service.ApiException;
+import com.secondhand.frontend.service.dto.AdminStatsResponse;
 import com.secondhand.frontend.service.dto.UserSummaryResponse;
 import com.secondhand.frontend.util.SceneManager;
 import javafx.concurrent.Task;
@@ -20,8 +21,7 @@ import java.util.List;
 
 /**
  * Single column list of users with a quick Block / Unblock action next to
- * each row, matching the UI pattern agreed with the teammates
- * advertisement-review screen (admin-ads-view.fxml) for a consistent look
+ * each row, along with real-time system stats dashboard.
  */
 public class AdminUsersController {
 
@@ -31,17 +31,35 @@ public class AdminUsersController {
     @FXML
     private Label errorLabel;
 
+    // لیبل‌ های آمار جدید
+    @FXML
+    private Label totalUsersLabel;
+
+    @FXML
+    private Label activeUsersLabel;
+
+    @FXML
+    private Label blockedUsersLabel;
+
+    @FXML
+    private Label totalConversationsLabel;
+
+    @FXML
+    private Label totalRatingsLabel;
+
     private final AdminService adminService = new AdminService();
 
     @FXML
     public void initialize() {
         usersListView.setCellFactory(list -> new UserRowCell());
         loadUsers();
+        loadAdminStats();
     }
 
     @FXML
     private void handleRefresh() {
         loadUsers();
+        loadAdminStats();
     }
 
     @FXML
@@ -73,6 +91,32 @@ public class AdminUsersController {
         new Thread(task).start();
     }
 
+    private void loadAdminStats() {
+        Task<AdminStatsResponse> task = new Task<>() {
+            @Override
+            protected AdminStatsResponse call() throws Exception {
+                return adminService.getAdminStats();
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            AdminStatsResponse stats = task.getValue();
+            if (stats != null) {
+                totalUsersLabel.setText("Total Users: " + stats.getTotalUsers());
+                activeUsersLabel.setText("Active: " + stats.getActiveUsers());
+                blockedUsersLabel.setText("Blocked: " + stats.getBlockedUsers());
+                totalConversationsLabel.setText("Chats: " + stats.getTotalConversations());
+                totalRatingsLabel.setText("Ratings: " + stats.getTotalRatings());
+            }
+        });
+
+        task.setOnFailed(event -> {
+            System.err.println("Failed to load admin stats: " + task.getException().getMessage());
+        });
+
+        new Thread(task).start();
+    }
+
     private void toggleBlock(UserSummaryResponse user) {
         hideError();
 
@@ -87,7 +131,10 @@ public class AdminUsersController {
             }
         };
 
-        task.setOnSucceeded(event -> loadUsers());
+        task.setOnSucceeded(event -> {
+            loadUsers();
+            loadAdminStats();
+        });
 
         task.setOnFailed(event -> {
             Throwable ex = task.getException();
@@ -111,7 +158,7 @@ public class AdminUsersController {
     }
 
     /**
-     * Custom row: user info on the left, a Block/Unblock button on the right.
+     * Custom row: user info on the left, a Block / Unblock button on the right.
      */
     private class UserRowCell extends ListCell<UserSummaryResponse> {
 

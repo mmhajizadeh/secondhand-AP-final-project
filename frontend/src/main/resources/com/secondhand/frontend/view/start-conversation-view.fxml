@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="12.0" xmlns="http://javafx.com/javafx/21"
@@ -16,15 +15,7 @@
 
     <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Start a Conversation"/>
 
-    <VBox spacing="4.0" visible="false" managed="false">
-        <Label text="Seller Username"/>
-        <TextField fx:id="sellerUsernameField" promptText="e.g. seller1"/>
-    </VBox>
-
-    <VBox spacing="4.0" visible="false" managed="false">
-        <Label text="Advertisement ID"/>
-        <TextField fx:id="advertisementIdField" promptText="Advertisement ID"/>
-    </VBox>
+    <Label fx:id="targetInfoLabel" style="-fx-font-size: 13px; -fx-text-fill: #444444; -fx-font-weight: bold;" text="To: -"/>
 
     <VBox spacing="4.0">
         <Label text="Message"/>

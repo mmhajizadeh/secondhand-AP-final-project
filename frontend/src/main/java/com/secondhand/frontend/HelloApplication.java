@@ -2,9 +2,6 @@ package com.secondhand.frontend;
 
 import com.secondhand.frontend.util.SceneManager;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
@@ -16,14 +13,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws Exception {
         SceneManager.setPrimaryStage(stage);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                HelloApplication.class.getResource("/com/secondhand/frontend/view/main-view.fxml"));
-        Parent root = fxmlLoader.load();
-
-        Scene scene = new Scene(root, 1200, 700);
-        stage.setTitle("Second Hand Market");
-        stage.setScene(scene);
-        stage.show();
+        SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
     }
 
     public static void main(String[] args) {

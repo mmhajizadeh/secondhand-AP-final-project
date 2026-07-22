@@ -18,7 +18,7 @@
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="950.0" style="-fx-background-color: #2C3E50; -fx-padding: 0 20 0 20;" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="userInfoLabel" text="Guest User" textFill="WHITE">
+            <Label fx:id="userInfoLabel" styleClass="header-label" text="Guest User" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
