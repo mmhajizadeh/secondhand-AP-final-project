@@ -1,7 +1,11 @@
 package com.secondhand.backend.service;
 
+import com.secondhand.backend.entity.Advertisement;
 import com.secondhand.backend.entity.Favorite;
+import com.secondhand.backend.entity.User;
+import com.secondhand.backend.repository.AdvertisementRepository;
 import com.secondhand.backend.repository.FavoriteRepository;
+import com.secondhand.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,37 +23,61 @@ import java.util.List;
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
+    private final UserRepository userRepository;
+    private final AdvertisementRepository advertisementRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository,
+                           UserRepository userRepository,
+                           AdvertisementRepository advertisementRepository) {
         this.favoriteRepository = favoriteRepository;
+        this.userRepository = userRepository;
+        this.advertisementRepository = advertisementRepository;
     }
 
     /**
-     * Retrieves all favorite advertisements specific to a user.
+     * Retrieves all favorite advertisements for a user based on their username.
      *
-     * @param userId The ID of the user requesting their favorites.
-     * @return A list of {@link Favorite} entities.
+     * @param username The username of the requesting user.
+     * @return A list of favorited {@link Advertisement} entities.
      */
-    public List<Favorite> getUserFavorites(Long userId) {
-        return favoriteRepository.findByUserId(userId);
+    public List<Advertisement> getUserFavoriteAds(String username) {
+        return favoriteRepository.findByUserUsername(username)
+                .stream()
+                .map(Favorite::getAdvertisement)
+                .toList();
     }
 
     /**
-     * Adds an advertisement to the user's favorite list.
+     * Adds an advertisement to a user's favorites by advertisement ID and username.
      *
-     * @param favorite The {@link Favorite} entity to be saved.
-     * @return The saved {@link Favorite} entity.
+     * @param adId     The ID of the advertisement to favorite.
+     * @param username The username of the user favoriting the ad.
+     * @return The saved {@link Favorite} record.
      */
-    public Favorite addFavorite(Favorite favorite) {
-        return favoriteRepository.save(favorite);
+    public Favorite addFavorite(Long adId, String username) {
+        // اگر قبلاً اضافه شده بود، همان را برگردان (جلوگیری از تکراری شدن)
+        return favoriteRepository.findByUserUsernameAndAdvertisementId(username, adId)
+                .orElseGet(() -> {
+                    User user = userRepository.findByUsername(username)
+                            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+                    Advertisement ad = advertisementRepository.findById(adId)
+                            .orElseThrow(() -> new RuntimeException("Advertisement not found with ID: " + adId));
+
+                    Favorite favorite = new Favorite();
+                    favorite.setUser(user);
+                    favorite.setAdvertisement(ad);
+                    return favoriteRepository.save(favorite);
+                });
     }
 
     /**
-     * Removes an advertisement from the user's favorite list.
+     * Removes an advertisement from a user's favorite list by advertisement ID and username.
      *
-     * @param favoriteId The unique ID of the favorite record to be removed.
+     * @param adId     The ID of the advertisement to remove.
+     * @param username The username of the user.
      */
-    public void removeFavorite(Long favoriteId) {
-        favoriteRepository.deleteById(favoriteId);
+    public void removeFavorite(Long adId, String username) {
+        favoriteRepository.findByUserUsernameAndAdvertisementId(username, adId)
+                .ifPresent(favoriteRepository::delete);
     }
 }
