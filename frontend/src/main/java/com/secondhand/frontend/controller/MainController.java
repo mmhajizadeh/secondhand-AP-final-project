@@ -204,8 +204,8 @@ public class MainController implements Initializable {
     private void showErrorAlert(String errorMessage) {
         javafx.application.Platform.runLater(() -> {
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-            alert.setTitle("خطای ارتباط با سرور");
-            alert.setHeaderText("مشکلی در دریافت اطلاعات پیش آمد.");
+            alert.setTitle("Server connection error");
+            alert.setHeaderText("something went wrong");
             alert.setContentText(errorMessage);
             alert.showAndWait();
         });
@@ -254,7 +254,11 @@ public class MainController implements Initializable {
 
     @FXML
     public void onNewAdNavAction() {
-        System.out.println("Opening New Ad Form...");
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            showErrorAlert("You must be logged in to post an ad");
+            return;
+        }
+        SceneManager.switchTo("/com/secondhand/frontend/view/new-ad-view.fxml", "Post New Ad");
     }
 
     @FXML

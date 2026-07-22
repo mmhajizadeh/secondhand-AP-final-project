@@ -11,7 +11,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Service class for handling HTTP communication with the backend API.
@@ -139,6 +142,53 @@ public class ApiService {
 
         if (response.statusCode() != 200) {
             throw new RuntimeException("Failed to reject ad: " +  response.statusCode());
+        }
+    }
+
+    /**
+     * Sends a request to create a new advertisement in the system.
+     * <p>
+     * Constructs a JSON payload with the ad details and sends a POST request
+     * to the backend. Requires a valid JWT token stored in {@link SessionManager}.
+     * </p>
+     *
+     * @param title       The title of the advertisement.
+     * @param description Detailed text describing the item.
+     * @param price       Price of the item in Tomans.
+     * @param categoryId  The unique database ID of the selected category.
+     * @param cityId      The unique database ID of the selected city.
+     * @throws Exception if the network request fails, unauthorized, or backend returns an error.
+     */
+    public static void createAd(String title, String description, Long price, Long categoryId, Long cityId) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+
+        Map<String, Object> categoryMap = new HashMap<>();
+        categoryMap.put("id", categoryId);
+
+        Map<String, Object> cityMap = new HashMap<>();
+        cityMap.put("id", cityId);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("title", title);
+        body.put("description", description);
+        body.put("price", price);
+        body.put("category", categoryMap);
+        body.put("city", cityMap);
+        body.put("status", "PENDING");
+
+        String jsonBody = mapper.writeValueAsString(body);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
+            throw new RuntimeException("Failed to create ad: " +  response.statusCode());
         }
     }
 }
