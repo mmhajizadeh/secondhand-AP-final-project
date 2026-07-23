@@ -6,6 +6,7 @@ module com.secondhand.frontend {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires java.rmi;
+    requires java.desktop;
 
     opens com.secondhand.frontend to javafx.fxml;
     opens com.secondhand.frontend.controller to javafx.fxml;

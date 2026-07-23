@@ -11,12 +11,15 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -176,9 +179,26 @@ public class AdDetailController implements Initializable {
         new Thread(task).start();
     }
 
+    /**
+     * Handles the back navigation action triggered by the user.
+     * <p>
+     * It intelligently checks the context: if the view is displayed as a modal/popup,
+     * it simply closes the popup window. If it is displayed on the primary application stage,
+     * it navigates back to the main dashboard.
+     * </p>
+     *
+     * @param event The action event triggered by clicking the back button.
+     */
     @FXML
-    public void onBackAction() {
-        SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
+    public void onBackAction(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage currentStage = (Stage) source.getScene().getWindow();
+
+        if (currentStage.equals(SceneManager.getPrimaryStage())) {
+            SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
+        } else {
+            currentStage.close();
+        }
     }
 
     @FXML

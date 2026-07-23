@@ -24,6 +24,15 @@ public class SceneManager {
         primaryStage = stage;
     }
 
+    /**
+     * Retrieves the primary application stage.
+     *
+     * @return The primary {@link Stage} of the application.
+     */
+    public static Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
     public static void switchTo(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
