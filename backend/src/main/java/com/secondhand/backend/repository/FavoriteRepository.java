@@ -29,19 +29,11 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     List<Favorite> findByUserId(Long userId);
 
     /**
-     * Finds all favorite records associated with a specific username.
-     *
-     * @param username The username of the account owner.
-     * @return A list of {@link Favorite} entities.
-     */
-    List<Favorite> findByUserUsername(String username);
-
-    /**
      * Finds a single favorite relation between a user and a specific advertisement.
      *
-     * @param username The username of the user.
+     * @param userId The ID of the user.
      * @param advertisementId The ID of the advertisement.
      * @return An {@link Optional} containing the {@link Favorite} entity if found.
      */
-    Optional<Favorite> findByUserUsernameAndAdvertisementId(String username, Long advertisementId);
+    Optional<Favorite> findByUserIdAndAdvertisementId(Long userId, Long advertisementId);
 }

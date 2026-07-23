@@ -41,7 +41,10 @@ public class FavoriteService {
      * @return A list of favorited {@link Advertisement} entities.
      */
     public List<Advertisement> getUserFavoriteAds(String username) {
-        return favoriteRepository.findByUserUsername(username)
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        return favoriteRepository.findByUserId(user.getId())
                 .stream()
                 .map(Favorite::getAdvertisement)
                 .toList();
@@ -55,16 +58,16 @@ public class FavoriteService {
      * @return The saved {@link Favorite} record.
      */
     public Favorite addFavorite(Long adId, String username) {
-        // اگر قبلاً اضافه شده بود، همان را برگردان (جلوگیری از تکراری شدن)
-        return favoriteRepository.findByUserUsernameAndAdvertisementId(username, adId)
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        return favoriteRepository.findByUserIdAndAdvertisementId(user.getId(), adId)
                 .orElseGet(() -> {
-                    User user = userRepository.findByUsername(username)
-                            .orElseThrow(() -> new RuntimeException("User not found: " + username));
                     Advertisement ad = advertisementRepository.findById(adId)
                             .orElseThrow(() -> new RuntimeException("Advertisement not found with ID: " + adId));
 
                     Favorite favorite = new Favorite();
-                    favorite.setUser(user);
+                    favorite.setUserId(user.getId());
                     favorite.setAdvertisement(ad);
                     return favoriteRepository.save(favorite);
                 });
@@ -77,7 +80,10 @@ public class FavoriteService {
      * @param username The username of the user.
      */
     public void removeFavorite(Long adId, String username) {
-        favoriteRepository.findByUserUsernameAndAdvertisementId(username, adId)
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        favoriteRepository.findByUserIdAndAdvertisementId(user.getId(), adId)
                 .ifPresent(favoriteRepository::delete);
     }
 }
