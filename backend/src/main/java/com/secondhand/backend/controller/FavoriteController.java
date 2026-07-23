@@ -1,7 +1,9 @@
 package com.secondhand.backend.controller;
 
+import com.secondhand.backend.entity.Advertisement;
 import com.secondhand.backend.entity.Favorite;
 import com.secondhand.backend.service.FavoriteService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,11 +11,10 @@ import java.util.List;
 /**
  * REST Controller for managing user favorite advertisements.
  * <p>
- * Provides endpoints for users to add, remove, and retrieve
+ * Provides endpoints for authenticated users to add, remove, and retrieve
  * their favorite ads. Base path is "/api/favorites".
  * </p>
- *
- * @author mmhajizadeh
+
  * @since 1.0
  */
 @RestController
@@ -26,37 +27,39 @@ public class FavoriteController {
     }
 
     /**
-     * Retrieves all favorite advertisements for a specific user.
+     * Retrieves all favorite advertisements for the currently authenticated user.
+     * Endpoint: GET /api/favorites
      *
-     * @param userId The ID of the user passed in the URL path.
-     * @return A list of {@link Favorite} objects belonging to the user.
-     * Endpoint: GET /api/favorites/user/{userId}
+     * @param authentication Security context containing authenticated user credentials.
+     * @return List of favorite {@link Advertisement} objects.
      */
-    @GetMapping("/user/{userId}")
-    public List<Favorite> getUserFavorites(@PathVariable Long userId) {
-        return favoriteService.getUserFavorites(userId);
+    @GetMapping
+    public List<Advertisement> getMyFavorites(Authentication authentication) {
+        return favoriteService.getUserFavoriteAds(authentication.getName());
     }
 
     /**
-     * Adds an advertisement to the user's favorites.
+     * Adds an advertisement to the authenticated user's favorites by ad ID.
+     * Endpoint: POST /api/favorites/{adId}
      *
-     * @param favorite The favorite data sent as a JSON payload.
-     * @return The saved {@link Favorite} object.
-     * Endpoint: POST /api/favorites
+     * @param adId           The ID of the advertisement to favorite.
+     * @param authentication Security context containing authenticated user credentials.
+     * @return The saved {@link Favorite} relation entity.
      */
-    @PostMapping
-    public Favorite addFavorite(@RequestBody Favorite favorite) {
-        return favoriteService.addFavorite(favorite);
+    @PostMapping("/{adId}")
+    public Favorite addFavorite(@PathVariable Long adId, Authentication authentication) {
+        return favoriteService.addFavorite(adId, authentication.getName());
     }
 
     /**
-     * Removes an advertisement from the user's favorites.
+     * Removes an advertisement from the authenticated user's favorites by ad ID.
+     * Endpoint: DELETE /api/favorites/{adId}
      *
-     * @param id The ID of the favorite record to delete.
-     * Endpoint: DELETE /api/favorites/{id}
+     * @param adId           The ID of the advertisement to remove from favorites.
+     * @param authentication Security context containing authenticated user credentials.
      */
-    @DeleteMapping("/{id}")
-    public void removeFavorite(@PathVariable Long id) {
-        favoriteService.removeFavorite(id);
+    @DeleteMapping("/{adId}")
+    public void removeFavorite(@PathVariable Long adId, Authentication authentication) {
+        favoriteService.removeFavorite(adId, authentication.getName());
     }
 }

@@ -122,6 +122,7 @@ public class MainController implements Initializable {
                 String categoryName = (ad.getCategory() != null) ? ad.getCategory().getName() : "بدون دسته";
 
                 cardController.setAdData(
+                        ad.getId(),
                         ad.getTitle(),
                         priceFormat.format(ad.getPrice()) + " تومان",
                         categoryName + " | " + cityName + " | دقایقی پیش",
@@ -272,9 +273,12 @@ public class MainController implements Initializable {
 
     @FXML
     public void onFavoritesNavAction() {
-        System.out.println("Opening Favorites View...");
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            showErrorAlert("Please login to view your favorites.");
+            return;
+        }
+        SceneManager.switchTo("/com/secondhand/frontend/view/favorites-view.fxml", "My Favorites");
     }
-
     @FXML
     public void onConversationsNavAction() {
         if (!SessionManager.getInstance().isLoggedIn()) {
