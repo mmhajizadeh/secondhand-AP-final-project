@@ -2,7 +2,7 @@
 
 A comprehensive client-server application built with Spring Boot and JavaFX for buying and selling second-hand items. This project implements a real-world architecture separating the Backend logic and RESTful communication from the Frontend user interface, with data persistently stored using SQLite.
 
-**Team Members:** Mohammad Mehdi Hajizadeh & Amirhossein Hosseinpour
+**Team Members:** Mohammad Mahdi Hajizadeh & Amirhossein Hosseinpour
 
 ---
 
@@ -10,7 +10,7 @@ A comprehensive client-server application built with Spring Boot and JavaFX for 
 
 As required by the project guidelines, the workload was distributed evenly (50-50). Below is the breakdown of our responsibilities encompassing design, implementation, testing, and documentation:
 
-### Mohammad Mehdi Hajizadeh
+### Mohammad Mahdi Hajizadeh
 In this project, I was primarily responsible for the core business logic of advertisements and the overall user interface design. I designed and implemented the complete lifecycle of an advertisement (`PENDING`, `ACTIVE`, `SOLD`), along with the ability for users to edit or delete their own ads. To enhance the user experience, I implemented a robust image upload system capable of handling up to 3 images per ad (Bonus Feature) using Base64 encoding. Additionally, I developed the advanced search and filtering system, allowing users to filter ads by category, city, and strict numeric price boundaries, as well as sorting them by newest, cheapest, or most expensive (Bonus Feature).
 
 On the frontend, I designed the Main Dashboard (Grid layout), Ad Details UI, and the Favorites system. I also established a smart `SceneManager` to seamlessly handle window navigation and strictly enforced UI constraints (e.g., hiding action buttons for non-active ads or guest users) to ensure the frontend accurately reflects backend security policies.
