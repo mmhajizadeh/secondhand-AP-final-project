@@ -189,4 +189,16 @@ public class AdvertisementController {
     public List<Advertisement> getMyAds(Authentication authentication) {
         return advertisementService.getAdsByOwnerUsername(authentication.getName());
     }
+
+    /**
+     * Fetches details of a single advertisement by its unique database ID.
+     * Endpoint: GET /api/advertisements/{id}
+     *
+     * @param id The ID of the advertisement to fetch.
+     * @return The matching {@link Advertisement} object.
+     */
+    @GetMapping("/{id}")
+    public Advertisement getAdById(@PathVariable Long id) {
+        return advertisementService.getAdvertisementById(id);
+    }
 }

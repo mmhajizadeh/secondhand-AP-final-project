@@ -12,6 +12,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -48,7 +49,12 @@ public class AdDetailController implements Initializable {
         if (currentAd != null) {
             DecimalFormat priceFormat = new DecimalFormat("#,###");
             titleLabel.setText(currentAd.getTitle());
-            priceLabel.setText(priceFormat.format(currentAd.getPrice()) + " Tomans");
+
+            if (currentAd.getPrice() != null) {
+                priceLabel.setText(priceFormat.format(currentAd.getPrice()) + " Tomans");
+            } else {
+                priceLabel.setText("-- Tomans");
+            }
 
             String cityName = (currentAd.getCity() != null) ? currentAd.getCity().getName() : "Unknown";
             String catName = (currentAd.getCategory() != null) ? currentAd.getCategory().getName() : "Uncategorized";
@@ -101,8 +107,8 @@ public class AdDetailController implements Initializable {
 
                         if (summary.getRatings() != null && !summary.getRatings().isEmpty()) {
                             for (RatingResponse r : summary.getRatings()) {
-                                VBox commentCard = new VBox(5);
-                                commentCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #DCDDE1; -fx-border-radius: 5;");
+                                VBox commentCard = new VBox(8);
+                                commentCard.setStyle("-fx-background-color: white; -fx-padding: 12; -fx-border-color: #DCDDE1; -fx-border-radius: 6;");
 
                                 String rater = (r.getRaterUsername() != null && !r.getRaterUsername().isBlank())
                                         ? r.getRaterUsername() : "Buyer";
@@ -115,7 +121,42 @@ public class AdDetailController implements Initializable {
                                 textLabel.setWrapText(true);
                                 textLabel.setStyle("-fx-text-fill: #7F8C8D;");
 
-                                commentCard.getChildren().addAll(userLabel, textLabel);
+                                Hyperlink adLink = new Hyperlink("View Advertisement");
+                                adLink.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498DB; -fx-padding: 0;");
+
+                                adLink.setOnAction(e -> {
+                                    Task<Advertisement> fetchAdTask = new Task<>() {
+                                        @Override
+                                        protected Advertisement call() throws Exception {
+                                            return com.secondhand.frontend.service.ApiService.getAdById(r.getAdvertisementId());
+                                        }
+                                    };
+
+                                    fetchAdTask.setOnSucceeded(fetchEvent -> {
+                                        Advertisement realAd = fetchAdTask.getValue();
+                                        if (realAd != null) {
+                                            Platform.runLater(() -> {
+                                                setSelectedAd(realAd);
+                                                NavigationContext.setTargetAdvertisementId(realAd.getId());
+                                                if (realAd.getOwnerUsername() != null) {
+                                                    NavigationContext.setTargetSellerUsername(realAd.getOwnerUsername());
+                                                }
+                                                SceneManager.showAsPopup("/com/secondhand/frontend/view/ad-detail-view.fxml", "Advertisement Details");
+                                            });
+                                        }
+                                    });
+
+                                    fetchAdTask.setOnFailed(fetchEvent -> {
+                                        System.err.println("Could not fetch ad details for ID: " + r.getAdvertisementId());
+                                        if (fetchAdTask.getException() != null) {
+                                            fetchAdTask.getException().printStackTrace();
+                                        }
+                                    });
+
+                                    new Thread(fetchAdTask).start();
+                                });
+
+                                commentCard.getChildren().addAll(userLabel, adLink, textLabel);
                                 commentsVBox.getChildren().add(commentCard);
                             }
                         } else {
@@ -192,5 +233,4 @@ public class AdDetailController implements Initializable {
 
         SceneManager.switchTo("/com/secondhand/frontend/view/login-view.fxml", "Login");
     }
-
 }

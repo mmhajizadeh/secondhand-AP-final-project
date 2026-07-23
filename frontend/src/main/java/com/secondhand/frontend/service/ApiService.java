@@ -218,6 +218,35 @@ public class ApiService {
     }
 
     /**
+     * Fetches details of a single advertisement by its unique database ID.
+     *
+     * @param adId The unique database identifier of the advertisement.
+     * @return The {@link Advertisement} object.
+     * @throws Exception if network request fails or ad is not found.
+     */
+    public static Advertisement getAdById(Long adId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            System.err.println("API ERROR: Status " + response.statusCode() + ", Body: " + response.body());
+            throw new RuntimeException("Failed to fetch ad details: " + response.statusCode());
+        }
+
+        try {
+            return mapper.readValue(response.body(), Advertisement.class);
+        } catch (Exception e) {
+            System.err.println("JSON Parsing Error: " + e.getMessage());
+            System.err.println("Response Body was: " + response.body());
+            throw e;
+        }
+    }
+
+    /**
      * Updates the status of a specific advertisement to SOLD.
      * This action indicates that the item has been successfully traded and is no longer available.
      *
