@@ -125,14 +125,12 @@ public class NewAdController implements Initializable {
         List<File> files = fileChooser.showOpenMultipleDialog(titleField.getScene().getWindow());
 
         if (files != null) {
-            if (files.size() > 3) {
-                showError("You can only select up to 3 images. The first 3 will be used.");
-                files = files.subList(0, 3);
-            } else {
-                base64Images.clear();
-            }
-
             for (File file : files) {
+                if (base64Images.size() >= 3) {
+                    showError("You have reached the maximum limit of 3 images.");
+                    break;
+                }
+
                 try {
                     byte[] fileContent = Files.readAllBytes(file.toPath());
                     String base64 = Base64.getEncoder().encodeToString(fileContent);

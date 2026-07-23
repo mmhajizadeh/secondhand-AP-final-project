@@ -10,6 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+
 /**
  * Controller class for managing the individual advertisement card UI.
  * <p>
@@ -45,10 +48,10 @@ public class AdCardController {
      * @param title        The title of the advertisement.
      * @param price        The formatted price string.
      * @param locationTime The formatted string containing the city and time elapsed.
-     * @param imageUrl     The URL or relative path to the advertisement's image.
+     * @param base64Image  The advertisement's image.
      * @param isFavorite   Whether the current user has favorited this advertisement.
      */
-    public void setAdData(Long adId, String title, String price, String locationTime, String imageUrl, boolean isFavorite) {
+    public void setAdData(Long adId, String title, String price, String locationTime, String base64Image, boolean isFavorite) {
         this.currentAdId = adId;
         this.isFavorite = isFavorite;
 
@@ -62,10 +65,15 @@ public class AdCardController {
 
         updateFavoriteButtonUI();
 
-        try {
-            adImage.setImage(new Image(imageUrl));
-        } catch (Exception e) {
-            System.err.println("Failed to load image: " + imageUrl);
+        if (base64Image != null && base64Image.length() > 200) {
+            try {
+                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+                adImage.setImage(new Image(new ByteArrayInputStream(imageBytes)));
+            } catch (Exception e) {
+                System.err.println("Failed to decode base64 image for ad: " + adId);
+            }
+        } else {
+            adImage.setImage(null);
         }
     }
 

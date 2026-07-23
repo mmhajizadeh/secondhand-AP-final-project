@@ -16,6 +16,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -43,6 +46,7 @@ public class AdDetailController implements Initializable {
     @FXML private VBox commentsVBox;
     @FXML private Button chatButton;
     @FXML private Button editButton;
+    @FXML private HBox imageGalleryHBox;
 
     private final RatingService ratingService = new RatingService();
 
@@ -93,8 +97,31 @@ public class AdDetailController implements Initializable {
 
             if (editButton != null) {
                 boolean canEdit = isOwner && !isSold;
-                editButton.setVisible(isOwner);
-                editButton.setManaged(isOwner);
+                editButton.setVisible(canEdit);
+                editButton.setManaged(canEdit);
+            }
+
+            if (imageGalleryHBox != null) {
+                imageGalleryHBox.getChildren().clear();
+
+                if (currentAd.getImages() != null && !currentAd.getImages().isEmpty()) {
+                    for (String base64Image : currentAd.getImages()) {
+                        try {
+                            byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Image);
+                            Image img = new Image(new java.io.ByteArrayInputStream(imageBytes));
+
+                            ImageView imageView = new ImageView(img);
+                            imageView.setFitHeight(200);
+                            imageView.setFitWidth(250);
+                            imageView.setPreserveRatio(true);
+                            imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+
+                            imageGalleryHBox.getChildren().add(imageView);
+                        } catch (Exception e) {
+                            System.err.println("Error decoding image in AdDetailController.");
+                        }
+                    }
+                }
             }
 
             loadSellerRating();

@@ -156,12 +156,17 @@ public class MainController implements Initializable {
 
                 boolean isFav =  favoriteAdIds.contains(ad.getId());
 
+                String firstImageBase64 = null;
+                if (ad.getImages() != null && !ad.getImages().isEmpty()) {
+                    firstImageBase64 = ad.getImages().get(0);
+                }
+
                 cardController.setAdData(
                         ad.getId(),
                         ad.getTitle(),
                         priceFormat.format(ad.getPrice()) + " تومان",
                         categoryName + " | " + cityName + " | دقایقی پیش",
-                        "image-url",
+                        firstImageBase64,
                         isFav
                 );
 

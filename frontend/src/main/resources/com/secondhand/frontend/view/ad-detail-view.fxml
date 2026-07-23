@@ -12,7 +12,6 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.secondhand.frontend.controller.AdDetailController">
 
-    <!-- Header Area -->
     <top>
         <VBox>
             <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="950.0" style="-fx-background-color: #2C3E50; -fx-padding: 0 20 0 20;">
@@ -20,14 +19,12 @@
                     <font><Font name="System Bold" size="16.0" /></font>
                 </Label>
             </HBox>
-            <!-- Back Button Area -->
             <HBox alignment="CENTER_LEFT" style="-fx-background-color: #ECF0F1; -fx-padding: 10 20 10 20;">
                 <Button mnemonicParsing="false" onAction="#onBackAction" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" text="⬅ Back to Ads" />
             </HBox>
         </VBox>
     </top>
 
-    <!-- Center Content -->
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
             <content>
@@ -54,6 +51,9 @@
                         </Label>
                     </HBox>
 
+                    <!-- 🔹 گالری عکس‌ها اضافه شد 🔹 -->
+                    <HBox fx:id="imageGalleryHBox" spacing="15.0" alignment="CENTER_LEFT" />
+
                     <VBox spacing="10.0" style="-fx-background-color: #F8F9FA; -fx-padding: 15; -fx-background-radius: 5;">
                         <Label text="Description:" textFill="#34495e"><font><Font name="System Bold" size="16.0" /></font></Label>
                         <Text fx:id="descriptionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Description details..." wrappingWidth="800.0">
@@ -61,7 +61,6 @@
                         </Text>
                     </VBox>
 
-                    <!-- Action Buttons -->
                     <HBox spacing="15.0">
                         <Button fx:id="chatButton" mnemonicParsing="false" onAction="#handleChatWithSeller" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="💬 Start Conversation" />
                         <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditAd" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Edit Advertisement" visible="false" managed="false" />
