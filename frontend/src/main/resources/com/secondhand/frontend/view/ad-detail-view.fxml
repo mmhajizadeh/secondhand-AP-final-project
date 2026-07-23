@@ -12,7 +12,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.secondhand.frontend.controller.AdDetailController">
 
-    <!-- Header Area (Exactly like Main View) -->
+    <!-- Header Area -->
     <top>
         <VBox>
             <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="950.0" style="-fx-background-color: #2C3E50; -fx-padding: 0 20 0 20;">
@@ -34,26 +34,29 @@
                 <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
                     <padding><Insets bottom="30.0" left="40.0" right="40.0" top="30.0" /></padding>
 
-                    <Label fx:id="titleLabel" text="عنوان آگهی" textFill="#2c3e50">
+                    <Label fx:id="titleLabel" text="Ad Title" textFill="#2c3e50">
                         <font><Font name="System Bold" size="28.0" /></font>
                     </Label>
 
-                    <Label fx:id="priceLabel" text="قیمت" textFill="#27ae60">
+                    <Label fx:id="priceLabel" text="Price" textFill="#27ae60">
                         <font><Font name="System Bold" size="22.0" /></font>
                     </Label>
 
-                    <HBox spacing="20.0">
-                        <Label fx:id="categoryCityLabel" text="دسته و شهر" textFill="#7f8c8d">
+                    <HBox alignment="CENTER_LEFT" spacing="20.0">
+                        <Label fx:id="categoryCityLabel" text="Category &amp; City" textFill="#7f8c8d">
                             <font><Font size="14.0" /></font>
                         </Label>
-                        <Label fx:id="ownerLabel" text="فروشنده" textFill="#34495e">
+                        <Label fx:id="ownerLabel" text="Seller" textFill="#34495e">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </Label>
+                        <Label fx:id="sellerRatingLabel" text="⭐ Rating: --" textFill="#F39C12">
                             <font><Font name="System Bold" size="14.0" /></font>
                         </Label>
                     </HBox>
 
                     <VBox spacing="10.0" style="-fx-background-color: #F8F9FA; -fx-padding: 15; -fx-background-radius: 5;">
-                        <Label text="توضیحات:" textFill="#34495e"><font><Font name="System Bold" size="16.0" /></font></Label>
-                        <Text fx:id="descriptionText" strokeType="OUTSIDE" strokeWidth="0.0" text="متن توضیحات..." wrappingWidth="800.0">
+                        <Label text="Description:" textFill="#34495e"><font><Font name="System Bold" size="16.0" /></font></Label>
+                        <Text fx:id="descriptionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Description details..." wrappingWidth="800.0">
                             <font><Font size="15.0" /></font>
                         </Text>
                     </VBox>

@@ -6,6 +6,7 @@ package com.secondhand.frontend.service.dto;
 public class ConversationResponse {
     private Long id;
     private Long advertisementId;
+    private String advertisementTitle;
     private String buyerUsername;
     private String sellerUsername;
     private String createdAt;
@@ -26,6 +27,14 @@ public class ConversationResponse {
 
     public void setAdvertisementId(Long advertisementId) {
         this.advertisementId = advertisementId;
+    }
+
+    public String getAdvertisementTitle() {
+        return advertisementTitle;
+    }
+
+    public void setAdvertisementTitle(String advertisementTitle) {
+        this.advertisementTitle = advertisementTitle;
     }
 
     public String getBuyerUsername() {

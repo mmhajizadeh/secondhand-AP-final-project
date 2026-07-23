@@ -12,6 +12,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
+/**
+ * Controller class for managing seller ratings and feedback submissions.
+ */
 public class RateSellerController {
 
     @FXML
@@ -37,34 +40,48 @@ public class RateSellerController {
     private Long sellerId;
     private Long advertisementId;
 
+    /**
+     * Initializes the rating view with default values and retrieves seller/advertisement details.
+     */
     @FXML
     public void initialize() {
         scoreChoiceBox.getItems().addAll(1, 2, 3, 4, 5);
         scoreChoiceBox.setValue(5);
 
-        // دریافت مستقیم آگهی و فروشنده از NavigationContext
         this.advertisementId = NavigationContext.getTargetAdvertisementId();
         this.sellerId = NavigationContext.getTargetSellerId();
+        String sellerUsername = NavigationContext.getTargetSellerUsername();
+        String adTitle = NavigationContext.getTargetAdvertisementTitle();
 
-        if (advertisementId != null) {
-            infoLabel.setText("Rating for Advertisement #" + advertisementId);
+        if (sellerUsername != null && !sellerUsername.isBlank()) {
+            if (adTitle != null && !adTitle.isBlank()) {
+                infoLabel.setText("Rating for Seller: " + sellerUsername + " (" + adTitle + ")");
+            } else {
+                infoLabel.setText("Rating for Seller: " + sellerUsername);
+            }
+        } else if (adTitle != null && !adTitle.isBlank()) {
+            infoLabel.setText("Rating for: " + adTitle);
         } else {
             infoLabel.setText("Rate Seller");
         }
     }
 
+    /**
+     * Handles the rating submission process asynchronously.
+     */
     @FXML
     private void handleSubmit() {
         hideMessages();
 
         Integer score = scoreChoiceBox.getValue();
 
+        // Validate required parameters before making an API request
         if (sellerId == null || advertisementId == null) {
             showError("No advertisement or seller selected. Please rate from advertisement page.");
             return;
         }
         if (score == null) {
-            showError("Please select a score");
+            showError("Please select a valid score (1 to 5)");
             return;
         }
 
@@ -103,23 +120,39 @@ public class RateSellerController {
         new Thread(task).start();
     }
 
+    /**
+     * Clears input fields after successful submission.
+     */
     private void clearForm() {
         commentField.clear();
         scoreChoiceBox.setValue(5);
     }
 
+    /**
+     * Displays an error message to the user.
+     *
+     * @param message The error message text.
+     */
     private void showError(String message) {
         successLabel.setVisible(false);
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }
 
+    /**
+     * Displays a success message to the user.
+     *
+     * @param message The success message text.
+     */
     private void showSuccess(String message) {
         errorLabel.setVisible(false);
         successLabel.setText(message);
         successLabel.setVisible(true);
     }
 
+    /**
+     * Hides both error and success message labels.
+     */
     private void hideMessages() {
         errorLabel.setVisible(false);
         successLabel.setVisible(false);

@@ -20,7 +20,7 @@ public class Advertisement {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AdvertisementStatus status =  AdvertisementStatus.PENDING;
+    private AdvertisementStatus status = AdvertisementStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
@@ -32,6 +32,9 @@ public class Advertisement {
 
     @Column(nullable = false)
     private String ownerUsername;
+
+    @Column
+    private Long ownerId;
 
     public Long getId() {
         return id;
@@ -95,5 +98,13 @@ public class Advertisement {
 
     public void setOwnerUsername(String ownerUsername) {
         this.ownerUsername = ownerUsername;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 }

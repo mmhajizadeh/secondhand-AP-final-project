@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 
 import java.util.List;
 
@@ -61,6 +62,17 @@ public class ConversationDetailController {
                 }
             }
         });
+
+        // Allow sending a message by pressing Enter in the text field.
+        if (newMessageField != null) {
+            newMessageField.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    event.consume();
+                    handleSend();
+                }
+            });
+        }
+
         if (conversationId != null) {
             loadMessages();
         }
@@ -104,6 +116,7 @@ public class ConversationDetailController {
 
         new Thread(task).start();
     }
+
     @FXML
     private void handleBack() {
         SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
@@ -128,10 +141,12 @@ public class ConversationDetailController {
 
         new Thread(task).start();
     }
+
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }
+
     private void hideError() {
         errorLabel.setVisible(false);
     }

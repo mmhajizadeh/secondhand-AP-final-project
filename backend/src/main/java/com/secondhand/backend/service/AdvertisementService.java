@@ -3,6 +3,7 @@ package com.secondhand.backend.service;
 import com.secondhand.backend.entity.Advertisement;
 import com.secondhand.backend.entity.AdvertisementStatus;
 import com.secondhand.backend.repository.AdvertisementRepository;
+import com.secondhand.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.lang.RuntimeException;
@@ -21,9 +22,11 @@ import java.util.List;
 @Service
 public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
+    private final UserRepository userRepository;
 
-    public AdvertisementService(AdvertisementRepository advertisementRepository) {
+    public AdvertisementService(AdvertisementRepository advertisementRepository, UserRepository userRepository) {
         this.advertisementRepository = advertisementRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -34,7 +37,9 @@ public class AdvertisementService {
      * @see AdvertisementStatus#ACTIVE
      */
     public List<Advertisement> getActiveAdvertisements() {
-        return advertisementRepository.findByStatus(AdvertisementStatus.ACTIVE);
+        List<Advertisement> ads = advertisementRepository.findByStatus(AdvertisementStatus.ACTIVE);
+        ads.forEach(this::ensureOwnerId);
+        return ads;
     }
 
     /**
@@ -45,6 +50,7 @@ public class AdvertisementService {
      * @return The saved {@link Advertisement} entity containing the auto-generated database ID.
      */
     public Advertisement saveAdvertisement(Advertisement newAd) {
+        ensureOwnerId(newAd);
         return advertisementRepository.save(newAd);
     }
 
@@ -55,7 +61,9 @@ public class AdvertisementService {
      * @return A complete list of all {@link Advertisement} objects in the database.
      */
     public List<Advertisement> getAllAdvertisementsForAdmin() {
-        return advertisementRepository.findAll();
+        List<Advertisement> ads = advertisementRepository.findAll();
+        ads.forEach(this::ensureOwnerId);
+        return ads;
     }
 
     /**
@@ -65,7 +73,9 @@ public class AdvertisementService {
      * @return A list of active {@link Advertisement} objects in the specified city.
      */
     public List<Advertisement> getActiveAdsByCity(Long cityId) {
-        return advertisementRepository.findByCityIdAndStatus(cityId, AdvertisementStatus.ACTIVE);
+        List<Advertisement> ads = advertisementRepository.findByCityIdAndStatus(cityId, AdvertisementStatus.ACTIVE);
+        ads.forEach(this::ensureOwnerId);
+        return ads;
     }
 
     /**
@@ -75,7 +85,9 @@ public class AdvertisementService {
      * @return A list of active {@link Advertisement} objects in the specified category.
      */
     public List<Advertisement> getActiveAdsByCategory(Long categoryId) {
-        return advertisementRepository.findByCategoryIdAndStatus(categoryId, AdvertisementStatus.ACTIVE);
+        List<Advertisement> ads = advertisementRepository.findByCategoryIdAndStatus(categoryId, AdvertisementStatus.ACTIVE);
+        ads.forEach(this::ensureOwnerId);
+        return ads;
     }
 
     /**
@@ -86,7 +98,9 @@ public class AdvertisementService {
      * @return A list of active {@link Advertisement} objects within the price range.
      */
     public List<Advertisement> getActiveAdsByPriceRange(Long minPrice, Long maxPrice) {
-        return advertisementRepository.findByPriceBetweenAndStatus(minPrice, maxPrice, AdvertisementStatus.ACTIVE);
+        List<Advertisement> ads = advertisementRepository.findByPriceBetweenAndStatus(minPrice, maxPrice, AdvertisementStatus.ACTIVE);
+        ads.forEach(this::ensureOwnerId);
+        return ads;
     }
 
     /**
@@ -112,6 +126,7 @@ public class AdvertisementService {
         existingAd.setCity(updatedAd.getCity());
         existingAd.setCategory(updatedAd.getCategory());
 
+        ensureOwnerId(existingAd);
         return advertisementRepository.save(existingAd);
     }
 
@@ -128,6 +143,7 @@ public class AdvertisementService {
         Advertisement existingAd = advertisementRepository.findById(id).orElseThrow(() -> new RuntimeException("Advertisement not found with id: " + id));
 
         existingAd.setStatus(newStatus);
+        ensureOwnerId(existingAd);
         return advertisementRepository.save(existingAd);
     }
 
@@ -156,6 +172,18 @@ public class AdvertisementService {
      * @return A list of {@link Advertisement} objects belonging to the user.
      */
     public List<Advertisement> getAdsByOwnerUsername(String username) {
-        return advertisementRepository.findByOwnerUsername(username);
+        List<Advertisement> ads = advertisementRepository.findByOwnerUsername(username);
+        ads.forEach(this::ensureOwnerId);
+        return ads;
+    }
+
+    private void ensureOwnerId(Advertisement ad) {
+        if (ad != null && ad.getOwnerId() == null && ad.getOwnerUsername() != null) {
+            userRepository.findByUsername(ad.getOwnerUsername())
+                    .ifPresent(user -> {
+                        ad.setOwnerId(user.getId());
+                        advertisementRepository.save(ad);
+                    });
+        }
     }
 }
