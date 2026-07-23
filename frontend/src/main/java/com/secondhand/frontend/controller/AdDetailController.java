@@ -106,28 +106,13 @@ public class AdDetailController implements Initializable {
             System.out.println("[DEBUG] Chat button clicked for Ad ID: " + currentAd.getId()
                     + " | Owner: " + currentAd.getOwnerUsername());
 
-            NavigationContext.setTargetAdvertisementId(currentAd.getId());
-            NavigationContext.setTargetAdvertisementTitle(currentAd.getTitle());
-            NavigationContext.setTargetSellerUsername(currentAd.getOwnerUsername());
-
-            SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Chats");
-        }
-    }
-
-    @FXML
-    private void handleRateSeller() {
-        if (!isUserLoggedIn()) {
-            redirectToLogin();
-            return;
-        }
-
-        if (currentAd != null) {
+            // Set all required context variables including seller ID
             NavigationContext.setTargetAdvertisementId(currentAd.getId());
             NavigationContext.setTargetAdvertisementTitle(currentAd.getTitle());
             NavigationContext.setTargetSellerUsername(currentAd.getOwnerUsername());
             NavigationContext.setTargetSellerId(currentAd.getOwnerId());
 
-            SceneManager.showAsPopup("/com/secondhand/frontend/view/rate-seller-view.fxml", "Rate Seller");
+            SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Chats");
         }
     }
 
@@ -145,5 +130,4 @@ public class AdDetailController implements Initializable {
 
         SceneManager.switchTo("/com/secondhand/frontend/view/login-view.fxml", "Login");
     }
-
 }

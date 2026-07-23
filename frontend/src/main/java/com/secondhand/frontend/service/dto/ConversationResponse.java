@@ -7,6 +7,7 @@ public class ConversationResponse {
     private Long id;
     private Long advertisementId;
     private String advertisementTitle;
+    private Long sellerId;
     private String buyerUsername;
     private String sellerUsername;
     private String createdAt;
@@ -35,6 +36,14 @@ public class ConversationResponse {
 
     public void setAdvertisementTitle(String advertisementTitle) {
         this.advertisementTitle = advertisementTitle;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 
     public String getBuyerUsername() {
@@ -76,5 +85,4 @@ public class ConversationResponse {
     public void setLastMessageAt(String lastMessageAt) {
         this.lastMessageAt = lastMessageAt;
     }
-
 }

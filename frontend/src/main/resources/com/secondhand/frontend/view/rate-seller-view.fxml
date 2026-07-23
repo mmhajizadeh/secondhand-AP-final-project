@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="12.0" xmlns="http://javafx.com/javafx/21"
@@ -30,5 +31,11 @@
     <Label fx:id="errorLabel" style="-fx-text-fill: red;" visible="false" wrapText="true"/>
     <Label fx:id="successLabel" style="-fx-text-fill: green;" visible="false" wrapText="true"/>
 
-    <Button fx:id="submitButton" defaultButton="true" maxWidth="Infinity" onAction="#handleSubmit" text="Submit Rating"/>
+    <!-- Action Buttons: Added Back button alongside Submit -->
+    <HBox spacing="10.0" alignment="CENTER">
+        <Button fx:id="backButton" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#handleBack"
+                style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" text="⬅ Back to Chat"/>
+        <Button fx:id="submitButton" defaultButton="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                onAction="#handleSubmit" style="-fx-cursor: hand;" text="Submit Rating"/>
+    </HBox>
 </VBox>

@@ -61,9 +61,9 @@
                         </Text>
                     </VBox>
 
+                    <!-- Action Buttons -->
                     <HBox spacing="15.0">
                         <Button mnemonicParsing="false" onAction="#handleChatWithSeller" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="💬 Start Conversation" />
-                        <Button mnemonicParsing="false" onAction="#handleRateSeller" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #F1C40F; -fx-text-fill: #2C3E50; -fx-font-weight: bold; -fx-cursor: hand;" text="⭐ Rate Seller" />
                     </HBox>
 
                 </VBox>
