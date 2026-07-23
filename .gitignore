@@ -34,7 +34,6 @@ out/
 gen/
 
 # SQLite databases
-*.db
 *.db-journal
 
 # Operating System Files
