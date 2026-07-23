@@ -2,6 +2,7 @@ package com.secondhand.frontend.controller;
 
 import com.secondhand.frontend.model.Advertisement;
 import com.secondhand.frontend.service.RatingService;
+import com.secondhand.frontend.service.dto.RatingResponse;
 import com.secondhand.frontend.service.dto.SellerRatingSummary;
 import com.secondhand.frontend.session.SessionManager;
 import com.secondhand.frontend.util.NavigationContext;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -28,6 +30,7 @@ public class AdDetailController implements Initializable {
     @FXML private Label ownerLabel;
     @FXML private Label sellerRatingLabel;
     @FXML private Text descriptionText;
+    @FXML private VBox commentsVBox;
 
     private final RatingService ratingService = new RatingService();
 
@@ -75,11 +78,45 @@ public class AdDetailController implements Initializable {
 
         task.setOnSucceeded(event -> {
             SellerRatingSummary summary = task.getValue();
-            if (summary != null && summary.getTotalRatings() > 0) {
-                String ratingText = String.format("⭐ %.1f/5 (%d reviews)", summary.getAverageScore(), summary.getTotalRatings());
-                Platform.runLater(() -> sellerRatingLabel.setText(ratingText));
-            } else {
-                Platform.runLater(() -> sellerRatingLabel.setText("⭐ No ratings"));
+            if (summary != null) {
+                if (summary.getTotalRatings() > 0) {
+                    String ratingText = String.format("⭐ %.1f/5 (%d reviews)", summary.getAverageScore(), summary.getTotalRatings());
+                    Platform.runLater(() -> sellerRatingLabel.setText(ratingText));
+                } else {
+                    Platform.runLater(() -> sellerRatingLabel.setText("⭐ No ratings"));
+                }
+
+                // Render Buyer Comments
+                Platform.runLater(() -> {
+                    if (commentsVBox != null) {
+                        commentsVBox.getChildren().clear();
+
+                        if (summary.getRatings() != null && !summary.getRatings().isEmpty()) {
+                            for (RatingResponse r : summary.getRatings()) {
+                                VBox commentCard = new VBox(5);
+                                commentCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #DCDDE1; -fx-border-radius: 5;");
+
+                                String rater = (r.getRaterUsername() != null && !r.getRaterUsername().isBlank())
+                                        ? r.getRaterUsername() : "Buyer";
+
+                                Label userLabel = new Label("👤 " + rater + " | ⭐ " + r.getScore() + "/5");
+                                userLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #2C3E50;");
+
+                                Label textLabel = new Label((r.getComment() != null && !r.getComment().isBlank())
+                                        ? r.getComment() : "No text comment.");
+                                textLabel.setWrapText(true);
+                                textLabel.setStyle("-fx-text-fill: #7F8C8D;");
+
+                                commentCard.getChildren().addAll(userLabel, textLabel);
+                                commentsVBox.getChildren().add(commentCard);
+                            }
+                        } else {
+                            Label emptyLabel = new Label("No comments yet.");
+                            emptyLabel.setStyle("-fx-text-fill: #7F8C8D;");
+                            commentsVBox.getChildren().add(emptyLabel);
+                        }
+                    }
+                });
             }
         });
 
