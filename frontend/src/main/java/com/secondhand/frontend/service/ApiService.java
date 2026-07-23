@@ -159,7 +159,7 @@ public class ApiService {
      * @param cityId      The unique database ID of the selected city.
      * @throws Exception if the network request fails, unauthorized, or backend returns an error.
      */
-    public static void createAd(String title, String description, Long price, Long categoryId, Long cityId) throws Exception {
+    public static void createAd(String title, String description, Long price, Long categoryId, Long cityId, List<String> images) throws Exception {
         String token = SessionManager.getInstance().getToken();
 
         Map<String, Object> categoryMap = new HashMap<>();
@@ -175,6 +175,10 @@ public class ApiService {
         body.put("category", categoryMap);
         body.put("city", cityMap);
         body.put("status", "PENDING");
+
+        if (images != null && !images.isEmpty()) {
+            body.put("images", images);
+        }
 
         String jsonBody = mapper.writeValueAsString(body);
 

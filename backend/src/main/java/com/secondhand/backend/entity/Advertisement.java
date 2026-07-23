@@ -2,6 +2,8 @@ package com.secondhand.backend.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "advertisements")
 public class Advertisement {
@@ -35,6 +37,11 @@ public class Advertisement {
 
     @Column
     private Long ownerId;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "advertisement_images", joinColumns = @JoinColumn(name = "advertisement_id"))
+    @Column(name = "image_data", columnDefinition = "TEXT")
+    private List<String> images;
 
     public Long getId() {
         return id;
@@ -106,5 +113,13 @@ public class Advertisement {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public java.util.List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(java.util.List<String> images) {
+        this.images = images;
     }
 }

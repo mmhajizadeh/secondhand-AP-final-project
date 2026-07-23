@@ -9,11 +9,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -24,6 +31,9 @@ public class NewAdController implements Initializable {
     @FXML private ComboBox<Category> categoryComboBox;
     @FXML private ComboBox<City> cityComboBox;
     @FXML private TextArea descriptionArea;
+    @FXML private Label imageCountLabel;
+
+    private final List<String> base64Images = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -39,14 +49,14 @@ public class NewAdController implements Initializable {
             categoryComboBox.getItems().addAll(categories);
 
             cityComboBox.setConverter(new StringConverter<City>() {
-               @Override
-               public String toString(City city) {
-                   return (city == null) ? null : city.getName();
-               }
-               @Override
-               public City fromString(String string) {
-                   return null;
-               }
+                @Override
+                public String toString(City city) {
+                    return (city == null) ? null : city.getName();
+                }
+                @Override
+                public City fromString(String string) {
+                    return null;
+                }
             });
 
             categoryComboBox.setConverter(new StringConverter<Category>() {
@@ -66,6 +76,37 @@ public class NewAdController implements Initializable {
     }
 
     @FXML
+    private void handleSelectImages() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Ad Images");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
+
+        List<File> files = fileChooser.showOpenMultipleDialog(titleField.getScene().getWindow());
+
+        if (files != null) {
+            if (files.size() > 3) {
+                showError("You can only select up to 3 images. The first 3 will be used.");
+                files = files.subList(0, 3);
+            } else {
+                base64Images.clear(); // پاک کردن انتخاب‌های قبلی
+            }
+
+            for (File file : files) {
+                try {
+                    byte[] fileContent = Files.readAllBytes(file.toPath());
+                    String base64 = Base64.getEncoder().encodeToString(fileContent);
+                    base64Images.add(base64);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (imageCountLabel != null) {
+                imageCountLabel.setText(base64Images.size() + "/3 selected");
+            }
+        }
+    }
+
+    @FXML
     private void handleSubmit() {
         String title = titleField.getText();
         String desc = descriptionArea.getText();
@@ -81,11 +122,10 @@ public class NewAdController implements Initializable {
         try {
             Long price = Long.parseLong(priceText.trim().replace(",", ""));
 
-            // send to backend
-            ApiService.createAd(title, desc, price, selectedCategory.getId(), selectedCity.getId());
+            ApiService.createAd(title, desc, price, selectedCategory.getId(), selectedCity.getId(), base64Images);
 
             showSuccess("Advertisement submitted successfully! It is now pending admin approval.");
-            handleCancel(); // Back to Main View
+            handleCancel();
         } catch (NumberFormatException e) {
             showError("Please enter a valid price number.");
         } catch (Exception e) {
