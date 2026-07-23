@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -40,9 +41,16 @@ public class AdDetailController implements Initializable {
     @FXML private Label sellerRatingLabel;
     @FXML private Text descriptionText;
     @FXML private VBox commentsVBox;
+    @FXML private Button chatButton;
+    @FXML private Button rateButton;
 
     private final RatingService ratingService = new RatingService();
 
+    /**
+     * Sets the target advertisement to be displayed in the detail view.
+     *
+     * @param ad The advertisement instance selected by the user.
+     */
     public static void setSelectedAd(Advertisement ad) {
         currentAd = ad;
     }
@@ -69,6 +77,16 @@ public class AdDetailController implements Initializable {
 
             if (descriptionText != null && currentAd.getDescription() != null) {
                 descriptionText.setText(currentAd.getDescription());
+            }
+
+            boolean isActive = "ACTIVE".equalsIgnoreCase(currentAd.getStatus());
+            if (chatButton != null) {
+                chatButton.setVisible(isActive);
+                chatButton.setManaged(isActive);
+            }
+            if (rateButton != null) {
+                rateButton.setVisible(isActive);
+                rateButton.setManaged(isActive);
             }
 
             loadSellerRating();
@@ -201,6 +219,9 @@ public class AdDetailController implements Initializable {
         }
     }
 
+    /**
+     * Navigates the user to the chat screen with the seller.
+     */
     @FXML
     private void handleChatWithSeller() {
         if (!isUserLoggedIn()) {
@@ -220,6 +241,9 @@ public class AdDetailController implements Initializable {
         }
     }
 
+    /**
+     * Opens the seller rating modal popup.
+     */
     @FXML
     private void handleRateSeller() {
         if (!isUserLoggedIn()) {
@@ -239,11 +263,19 @@ public class AdDetailController implements Initializable {
         }
     }
 
+    /**
+     * Checks if a user session is active.
+     *
+     * @return True if logged in, false otherwise.
+     */
     private boolean isUserLoggedIn() {
         String token = SessionManager.getInstance().getToken();
         return token != null && !token.trim().isEmpty();
     }
 
+    /**
+     * Redirects unauthenticated users to the login screen.
+     */
     private void redirectToLogin() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Login Required");
