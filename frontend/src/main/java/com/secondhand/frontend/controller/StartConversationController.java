@@ -11,33 +11,26 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 
 public class StartConversationController {
 
-    @FXML
-    private Label targetInfoLabel;
-
-    @FXML
-    private TextArea messageField;
-
-    @FXML
-    private Label errorLabel;
-
-    @FXML
-    private Button sendButton;
+    @FXML private Label targetInfoLabel;
+    @FXML private TextArea messageField;
+    @FXML private Label errorLabel;
+    @FXML private Button sendButton;
 
     private final ChatService chatService = new ChatService();
-
     private Long advertisementId;
     private String sellerUsername;
 
     @FXML
     public void initialize() {
-        // خواندن اطلاعات آگهی و فروشنده مستقیم از Context
+        // دریافت اطلاعات آگهی
         this.advertisementId = NavigationContext.getTargetAdvertisementId();
         this.sellerUsername = NavigationContext.getTargetSellerUsername();
 
-        // نمایش اطلاعات بالای کادر متن
+        // نمایش اطلاعات بالای صفحه
         if (sellerUsername != null && advertisementId != null) {
             targetInfoLabel.setText("To seller: " + sellerUsername + " (Ad #" + advertisementId + ")");
         } else if (sellerUsername != null) {
@@ -47,12 +40,25 @@ public class StartConversationController {
         } else {
             targetInfoLabel.setText("Start a new conversation");
         }
+
+        // قابلیت ارسال پیام با کلید Enter
+        if (messageField != null) {
+            messageField.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    if (event.isShiftDown()) {
+                        // Shift + Enter -> خط بعدی
+                    } else {
+                        event.consume();
+                        handleSend();
+                    }
+                }
+            });
+        }
     }
 
     @FXML
     private void handleSend() {
         hideError();
-
         String content = messageField.getText() == null ? "" : messageField.getText().trim();
 
         if (sellerUsername == null || sellerUsername.isBlank()) {
@@ -69,7 +75,6 @@ public class StartConversationController {
         }
 
         StartConversationRequest requestBody = new StartConversationRequest(advertisementId, sellerUsername, content);
-
         sendButton.setDisable(true);
 
         Task<MessageResponse> task = new Task<>() {
@@ -81,6 +86,10 @@ public class StartConversationController {
 
         task.setOnSucceeded(event -> {
             sendButton.setDisable(false);
+            // پاک کردن Context بعد از ارسال موفق پیام
+            NavigationContext.setTargetAdvertisementId(null);
+            NavigationContext.setTargetSellerUsername(null);
+
             SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
         });
 
@@ -90,7 +99,7 @@ public class StartConversationController {
             if (ex instanceof ApiException apiEx) {
                 showError(apiEx.getMessage());
             } else {
-                showError("Could not connect to the server Make sure the backend is running");
+                showError("Could not connect to the server. Make sure the backend is running.");
             }
         });
 

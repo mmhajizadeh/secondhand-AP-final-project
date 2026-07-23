@@ -1,11 +1,13 @@
 package com.secondhand.backend.service;
 
 import com.secondhand.backend.dto.*;
+import com.secondhand.backend.entity.Advertisement;
 import com.secondhand.backend.entity.Conversation;
 import com.secondhand.backend.entity.Message;
 import com.secondhand.backend.entity.User;
 import com.secondhand.backend.exception.ForbiddenOperationException;
 import com.secondhand.backend.exception.ResourceNotFoundException;
+import com.secondhand.backend.repository.AdvertisementRepository;
 import com.secondhand.backend.repository.ConversationRepository;
 import com.secondhand.backend.repository.MessageRepository;
 import com.secondhand.backend.repository.UserRepository;
@@ -30,13 +32,16 @@ public class ChatService {
     private final ConversationRepository conversationRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final AdvertisementRepository advertisementRepository;
 
     public ChatService(ConversationRepository conversationRepository,
                        MessageRepository messageRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       AdvertisementRepository advertisementRepository) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.advertisementRepository = advertisementRepository;
     }
 
     /**
@@ -124,9 +129,14 @@ public class ChatService {
         Optional<Message> lastMessage = messageRepository
                 .findFirstByConversationIdOrderBySentAtDesc(conversation.getId());
 
+        String advertisementTitle = advertisementRepository.findById(conversation.getAdvertisementId())
+                .map(Advertisement::getTitle)
+                .orElse("Deleted advertisement");
+
         return new ConversationResponse(
                 conversation.getId(),
                 conversation.getAdvertisementId(),
+                advertisementTitle,
                 conversation.getBuyerUsername(),
                 conversation.getSellerUsername(),
                 conversation.getCreatedAt(),
@@ -145,4 +155,3 @@ public class ChatService {
         );
     }
 }
-

@@ -277,6 +277,16 @@ public class MainController implements Initializable {
 
     @FXML
     public void onConversationsNavAction() {
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Authentication Required");
+            alert.setHeaderText("Login Required");
+            alert.setContentText("You must be logged in to view your conversations.");
+            alert.showAndWait();
+
+            SceneManager.switchTo("/com/secondhand/frontend/view/login-view.fxml", "Login");
+            return;
+        }
         SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
     }
 

@@ -1,19 +1,20 @@
 package com.secondhand.frontend.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
-/**
- * Data model representing an Advertisement.
- * Maps the JSON response from the backend API to a Java object.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Advertisement {
     private Long id;
     private String title;
     private String description;
     private Long price;
+
+    @JsonAlias({"sellerId", "ownerId", "userId"})
+    private Long ownerId;
+
     private String ownerUsername;
     private List<String> images;
     private City city;
@@ -50,6 +51,14 @@ public class Advertisement {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getOwnerUsername() {

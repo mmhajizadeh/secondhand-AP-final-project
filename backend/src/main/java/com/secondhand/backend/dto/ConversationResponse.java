@@ -13,16 +13,19 @@ public class ConversationResponse {
 
     private Long id;
     private Long advertisementId;
+    private String advertisementTitle;
     private String buyerUsername;
     private String sellerUsername;
     private LocalDateTime createdAt;
     private String lastMessagePreview;
     private LocalDateTime lastMessageAt;
 
-    public ConversationResponse(Long id, Long advertisementId, String buyerUsername, String sellerUsername,
-                                 LocalDateTime createdAt, String lastMessagePreview, LocalDateTime lastMessageAt) {
+    public ConversationResponse(Long id, Long advertisementId, String advertisementTitle, String buyerUsername,
+                                String sellerUsername, LocalDateTime createdAt, String lastMessagePreview,
+                                LocalDateTime lastMessageAt) {
         this.id = id;
         this.advertisementId = advertisementId;
+        this.advertisementTitle = advertisementTitle;
         this.buyerUsername = buyerUsername;
         this.sellerUsername = sellerUsername;
         this.createdAt = createdAt;
@@ -36,6 +39,10 @@ public class ConversationResponse {
 
     public Long getAdvertisementId() {
         return advertisementId;
+    }
+
+    public String getAdvertisementTitle() {
+        return advertisementTitle;
     }
 
     public String getBuyerUsername() {

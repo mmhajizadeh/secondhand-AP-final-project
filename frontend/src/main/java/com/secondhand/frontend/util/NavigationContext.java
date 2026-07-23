@@ -13,6 +13,7 @@ public class NavigationContext {
     // Advertisement & Seller Context
     private static Long targetAdvertisementId;
     private static Long targetSellerId;
+    private static String targetAdvertisementTitle;
     private static String targetSellerUsername;
 
     private NavigationContext() {
@@ -41,6 +42,14 @@ public class NavigationContext {
         targetAdvertisementId = id;
     }
 
+    public static String getTargetAdvertisementTitle() {
+        return targetAdvertisementTitle;
+    }
+
+    public static void setTargetAdvertisementTitle(String title) {
+        targetAdvertisementTitle = title;
+    }
+
     public static Long getTargetSellerId() {
         return targetSellerId;
     }
@@ -64,5 +73,6 @@ public class NavigationContext {
         targetAdvertisementId = null;
         targetSellerId = null;
         targetSellerUsername = null;
+        targetAdvertisementTitle = null;
     }
 }
