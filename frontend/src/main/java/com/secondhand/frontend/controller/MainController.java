@@ -17,8 +17,10 @@ import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -112,6 +114,16 @@ public class MainController implements Initializable {
         adsContainer.getChildren().clear();
         DecimalFormat priceFormat = new DecimalFormat("#,###");
 
+        Set<Long> favoriteAdIds = new HashSet<>();
+        if (SessionManager.getInstance().isLoggedIn()) {
+            try {
+                List<Advertisement> favs = ApiService.getFavorites();
+                favs.forEach(fav -> favoriteAdIds.add(fav.getId()));
+            } catch (Exception e) {
+                System.err.println("Could not load favorites for heart icons.");
+            }
+        }
+
         try {
             for (Advertisement ad : ads) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/secondhand/frontend/view/ad-card.fxml"));
@@ -121,12 +133,15 @@ public class MainController implements Initializable {
                 String cityName = (ad.getCity() != null) ? ad.getCity().getName() : "نامشخص";
                 String categoryName = (ad.getCategory() != null) ? ad.getCategory().getName() : "بدون دسته";
 
+                boolean isFav =  favoriteAdIds.contains(ad.getId());
+
                 cardController.setAdData(
                         ad.getId(),
                         ad.getTitle(),
                         priceFormat.format(ad.getPrice()) + " تومان",
                         categoryName + " | " + cityName + " | دقایقی پیش",
-                        "image-url"
+                        "image-url",
+                        isFav
                 );
 
                 cardBox.setOnMouseClicked(event -> {
