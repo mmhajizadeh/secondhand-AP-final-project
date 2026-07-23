@@ -2,77 +2,71 @@
 
 A comprehensive client-server application built with Spring Boot and JavaFX for buying and selling second-hand items. This project implements a real-world architecture separating the Backend logic and RESTful communication from the Frontend user interface, with data persistently stored using SQLite.
 
-## 🛠 Technologies Used
-* **Backend:** Java, Spring Boot 4.1.0, Spring Data JPA, Spring Security, JWT (jjwt 0.12.6)
-* **Frontend:** JavaFX 21, FXML, Jackson (JSON Parsing)
-* **Database:** SQLite
-* **Architecture:** Client-Server / RESTful API
+**Team Members:** Mohammad Mehdi Hajizadeh & Amirhossein Hosseinpour
 
 ---
 
 ## 👥 Team Members & Contributions
 
-This project was collaboratively developed by our team of two. Below is the breakdown of our responsibilities and implementations:
+As required by the project guidelines, the workload was distributed evenly (50-50). Below is the breakdown of our responsibilities encompassing design, implementation, testing, and documentation:
 
-### 1. Mohammad Mehdi Hajizadeh
-**Role:** Full-Stack Developer (Advertisements, Search/Filtering, Core UI, & Navigation)
-* **Advertisement Management:** Implemented the core logic for creating, viewing, and managing ads with distinct statuses (`PENDING`, `ACTIVE`, `SOLD`).
-* **Advanced Search & Filtering:** Created a hybrid in-memory/backend filtering system allowing users to search by keywords, filter by City and Category, and apply strict numeric price range validations.
-* **Favorites System:** Implemented the backend logic and frontend UI for users to add/remove ads to their personal favorites list.
-* **Frontend Navigation & UI:**
-    * Designed the Main Dashboard (Grid layout) and Ad Details UI.
-    * Ensured strict UI constraints (e.g., hiding Chat and Rate buttons if an ad is not in the `ACTIVE` status).
+### Mohammad Mehdi Hajizadeh
+In this project, I was primarily responsible for the core business logic of advertisements and the overall user interface design. I designed and implemented the complete lifecycle of an advertisement (`PENDING`, `ACTIVE`, `SOLD`), along with the ability for users to edit or delete their own ads. To enhance the user experience, I implemented a robust image upload system capable of handling up to 3 images per ad (Bonus Feature) using Base64 encoding. Additionally, I developed the advanced search and filtering system, allowing users to filter ads by category, city, and strict numeric price boundaries, as well as sorting them by newest, cheapest, or most expensive (Bonus Feature).
 
-### 2. Amirhossein Hosseinpour
-**Role:** Full-Stack Developer (Authentication, Chat System, Rating, & Admin Dashboard)
-* **User & Authentication:** Built the registration and login flows, secured by JWT authentication and BCrypt password hashing.
-* **Chat System:** Implemented the conversation engine allowing buyers and sellers to communicate securely, including real-time simulation and checks to prevent blocked users from interacting.
-* **Rating System:** Created the backend constraints and frontend UI for buyers to rate sellers (1 to 5 stars), preventing self-rating and duplicate ratings.
-* **Admin Panel:** Developed the dashboard for administrators to manage users, monitor block statuses, and safely block/unblock users (with logic to prevent self-blocking).
-* **Navigation & Security Polish:**
-    * Implemented guest mode browsing with `permitAll` endpoints for public data (Cities, Categories).
-    * Refined redirect paths post-login to seamlessly route users to the main view.
-    * Removed initial redundant chat screens, routing users directly to their active conversation lists.
-    * Handled deep-link navigation between teammate components (e.g., moving rating buttons to the chat interface).
+On the frontend, I designed the Main Dashboard (Grid layout), Ad Details UI, and the Favorites system. I also established a smart `SceneManager` to seamlessly handle window navigation and strictly enforced UI constraints (e.g., hiding action buttons for non-active ads or guest users) to ensure the frontend accurately reflects backend security policies.
 
-* **Frontend Navigation & UI:**
-  * Designed the Main Dashboard (Grid layout) and Ad Details UI.
-  * Enhanced UI constraints (e.g., hiding Chat and Rate buttons if an ad is not in the `ACTIVE` status).
-  * Refined window navigation logic to gracefully handle popup modals.
+### Amirhossein Hosseinpour
+My primary focus was on the security, authentication, communication, and administrative aspects of the application. I built the registration and login flows from scratch, securing the system with JWT authentication and BCrypt password hashing. I also designed and implemented the real-time chat engine, allowing buyers and sellers to communicate securely within the app, and integrated constraints to prevent blocked users from interacting. Furthermore, I developed the seller rating system (1 to 5 stars), ensuring robust backend validation to prevent self-rating or duplicate reviews.
+
+For the administrative side, I developed the Admin Dashboard, which empowers administrators to moderate advertisements (approve/reject) and manage user accounts (block/unblock), including crucial logic to prevent admins from accidentally blocking themselves. I also refined the frontend navigation flow, implementing a guest mode with `permitAll` endpoints for public browsing and ensuring smooth redirects post-login.
+
 ---
 
-## 🚀 Key Features
+## 🚀 Implemented Features
 
 ### Base & Complete Features
-* **User Authentication:** Secure JWT-based Login and Registration. Guest users can browse but are prompted to log in for interactions.
-* **Advertisement Lifecycle:** Ads go through a cycle (`PENDING` -> `ACTIVE` -> `SOLD`). Only `ACTIVE` ads are publicly visible.
-* **Smart Search:** Filter items dynamically based on category, location, text, and price boundaries.
+* **User Authentication:** Secure JWT-based Login and Registration. Guest mode is supported for browsing.
+* **Advertisement Lifecycle & Management:** Ads follow a strict cycle (`PENDING` -> `ACTIVE` -> `SOLD`). Owners can edit or delete their own ads.
+* **Smart Search & Filtering:** Filter items dynamically based on category, location, text, and minimum/maximum price boundaries.
 * **Direct Communication:** Built-in messaging system connecting buyers directly to ad owners.
+* **Favorites System:** Users can save and manage their favorite advertisements.
 * **Reputation System:** 1-5 star rating system for sellers after interactions.
-* **Admin Controls:** Dedicated panel for user management and ad moderation.
+* **Admin Controls:** Dedicated panel for user management (block/unblock) and ad moderation (approve/reject).
+
+### Bonus Features Implemented
+* **Multiple Images Gallery:** Support for uploading and viewing up to 3 images per advertisement.
+* **Advanced Sorting:** Ability to sort search results by "Newest", "Cheapest", and "Most Expensive".
+
+*(Note: Screenshots of the UI can be found in the `/screenshots` folder).*
 
 ---
 
-## ⚙️ How to Run the Project
+## 💾 Data Storage
+
+* **Database:** SQLite is used as the persistent storage mechanism.
+* The database file (`secondhand.db`) is located in the root of the backend directory. It ensures that all users, ads, chats, and ratings remain intact across application restarts.
+
+---
+
+## ⚙️ Prerequisites & Execution Guide
 
 ### Prerequisites
-* Java Development Kit (JDK) 21 or higher.
-* Maven installed.
-* An IDE (IntelliJ IDEA recommended).
+* **Java Development Kit (JDK):** Version 21 or higher.
+* **Build Tool:** Maven.
+* **IDE:** IntelliJ IDEA (Recommended).
 
-### 1. Running the Backend
+### 1. Running the Backend (Server)
 1. Navigate to the `backend` directory.
-2. The SQLite database (`secondhand.db`) will be automatically generated in the root folder upon the first run.
+2. Ensure the Maven dependencies are successfully downloaded.
 3. Run the `BackendApplication.java` main class.
-4. The server will start on `http://localhost:8080`.
+4. The Spring Boot server will start on `http://localhost:8080`.
+5. *Note: The SQLite database (`secondhand.db`) is already pre-populated with test data for your convenience.*
 
-### 2. Running the Frontend
-1. Navigate to the `frontend` directory.
-2. Ensure JavaFX dependencies are properly loaded via Maven.
+### 2. Running the Frontend (Client)
+1. Open a new terminal/window and navigate to the `frontend` directory.
+2. Ensure JavaFX and Jackson dependencies are properly loaded via Maven.
 3. Run the `HelloApplication.java` main class.
-4. The JavaFX application window will launch.
-
-### 3. Test
+4. The JavaFX application window will launch, ready to communicate with the backend.
 
 ---
 
@@ -94,3 +88,5 @@ To facilitate testing and evaluation, the database has been pre-seeded with samp
 * **Username:** `user2`
 * **Password:** `123456`
 * *Role:* Regular User (Buyer/Seller).
+
+*You may also register a new user normally through the application's graphical interface.*
