@@ -18,8 +18,13 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for managing the detailed view of an advertisement,
+ * seller ratings, and buyer comments.
+ */
 public class AdDetailController implements Initializable {
 
     private static Advertisement currentAd;
@@ -61,6 +66,9 @@ public class AdDetailController implements Initializable {
         }
     }
 
+    /**
+     * Asynchronously loads the seller's rating summary and buyer comments.
+     */
     private void loadSellerRating() {
         if (currentAd.getOwnerId() == null) {
             if (sellerRatingLabel != null) {
@@ -80,7 +88,7 @@ public class AdDetailController implements Initializable {
             SellerRatingSummary summary = task.getValue();
             if (summary != null) {
                 if (summary.getTotalRatings() > 0) {
-                    String ratingText = String.format("⭐ %.1f/5 (%d reviews)", summary.getAverageScore(), summary.getTotalRatings());
+                    String ratingText = String.format(Locale.US, "⭐ %.1f/5 (%d reviews)", summary.getAverageScore(), summary.getTotalRatings());
                     Platform.runLater(() -> sellerRatingLabel.setText(ratingText));
                 } else {
                     Platform.runLater(() -> sellerRatingLabel.setText("⭐ No ratings"));
@@ -165,6 +173,8 @@ public class AdDetailController implements Initializable {
             NavigationContext.setTargetSellerId(currentAd.getOwnerId());
 
             SceneManager.showAsPopup("/com/secondhand/frontend/view/rate-seller-view.fxml", "Rate Seller");
+
+            loadSellerRating();
         }
     }
 

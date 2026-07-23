@@ -46,7 +46,7 @@ public class MyAdsController implements Initializable {
                     root.setStyle("-fx-padding: 15; -fx-background-color: transparent; -fx-border-color: #BDC3C7; -fx-border-width: 0 0 1 0;");
                     root.setAlignment(Pos.CENTER_LEFT);
 
-                    Label titleLabel = new Label(ad.getTitle() + " (Sattus: " + ad.getStatus() + ")");
+                    Label titleLabel = new Label(ad.getTitle() + " (Status: " + ad.getStatus() + ")");
                     titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
                     Region spacer = new Region();
