@@ -210,6 +210,9 @@ public class AdDetailController implements Initializable {
      */
     @FXML
     public void onBackAction(ActionEvent event) {
+        NavigationContext.setTargetAdvertisementId(null);
+        NavigationContext.setTargetSellerUsername(null);
+
         Node source = (Node) event.getSource();
         Stage currentStage = (Stage) source.getScene().getWindow();
 

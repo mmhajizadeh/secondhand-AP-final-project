@@ -61,6 +61,9 @@ public class ConversationsListController {
         Long targetAdId = NavigationContext.getTargetAdvertisementId();
         String targetSeller = NavigationContext.getTargetSellerUsername();
 
+        NavigationContext.setTargetAdvertisementId(null);
+        NavigationContext.setTargetSellerUsername(null);
+
         loadConversations(targetAdId, targetSeller);
     }
 
