@@ -46,9 +46,12 @@ public class AdCardController {
      * @param price        The formatted price string.
      * @param locationTime The formatted string containing the city and time elapsed.
      * @param imageUrl     The URL or relative path to the advertisement's image.
+     * @param isFavorite   Whether the current user has favorited this advertisement.
      */
-    public void setAdData(Long adId, String title, String price, String locationTime, String imageUrl) {
+    public void setAdData(Long adId, String title, String price, String locationTime, String imageUrl, boolean isFavorite) {
         this.currentAdId = adId;
+        this.isFavorite = isFavorite;
+
         titleLabel.setText(title);
         priceLabel.setText(price);
         locationTimeLabel.setText(locationTime);
@@ -56,6 +59,8 @@ public class AdCardController {
         titleLabel.setStyle("-fx-text-fill: #2C3E50; -fx-font-weight: bold; -fx-font-size: 14px;");
         priceLabel.setStyle("-fx-text-fill: #27AE60; -fx-font-weight: bold; -fx-font-size: 14px;");
         locationTimeLabel.setStyle("-fx-text-fill: #7F8C8D; -fx-font-size: 12px;");
+
+        updateFavoriteButtonUI();
 
         try {
             adImage.setImage(new Image(imageUrl));
@@ -66,8 +71,7 @@ public class AdCardController {
 
     /**
      * Handles the click event on the favorite button.
-     * Toggles the favorite state and updates the UI accordingly.
-     * Updates the UI heart icon color and communicates with the backend API.
+     * Toggles the favorite state, updates backend, and refreshes the UI icon.
      */
     @FXML
     public void handleFavoriteClick() {
@@ -80,16 +84,26 @@ public class AdCardController {
             if (!isFavorite) {
                 ApiService.addFavorite(currentAdId);
                 isFavorite = true;
-                favoriteButton.setText("♥");
-                favoriteButton.setStyle("-fx-text-fill: red;");
             } else {
                 ApiService.removeFavorite(currentAdId);
                 isFavorite = false;
-                favoriteButton.setText("♡");
-                favoriteButton.setStyle("-fx-text-fill: black;");
             }
+            updateFavoriteButtonUI();
         } catch (Exception e) {
             showAlert("Failed to update favorites: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Updates the visual representation of the favorite button based on state.
+     */
+    private void updateFavoriteButtonUI() {
+        if (isFavorite) {
+            favoriteButton.setText("♥");
+            favoriteButton.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        } else {
+            favoriteButton.setText("♡");
+            favoriteButton.setStyle("-fx-text-fill: black;");
         }
     }
 

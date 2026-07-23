@@ -177,6 +177,17 @@ public class AdvertisementService {
         return ads;
     }
 
+    /**
+     * Retrieves an advertisement entity by its unique ID.
+     *
+     * @param id The unique identifier.
+     * @return The {@link Advertisement} entity.
+     */
+    public Advertisement getAdvertisementById(Long id) {
+        return advertisementRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Advertisement not found with ID: " + id));
+    }
+
     private void ensureOwnerId(Advertisement ad) {
         if (ad != null && ad.getOwnerId() == null && ad.getOwnerUsername() != null) {
             userRepository.findByUsername(ad.getOwnerUsername())

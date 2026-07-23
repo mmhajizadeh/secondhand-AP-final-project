@@ -54,6 +54,14 @@
                     <TextArea fx:id="descriptionArea" prefHeight="120.0" promptText="Describe your item..." wrapText="true" />
                 </VBox>
 
+                <VBox spacing="5.0">
+                    <Label text="Images (Max 3):" textFill="#34495e"><font><Font name="System Bold" size="14.0" /></font></Label>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <Button mnemonicParsing="false" onAction="#handleSelectImages" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-cursor: hand;" text="Browse Images..." />
+                        <Label fx:id="imageCountLabel" text="0/3 selected" textFill="#7f8c8d" />
+                    </HBox>
+                </VBox>
+
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <Button mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" text="Cancel" />
                     <Button mnemonicParsing="false" onAction="#handleSubmit" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Submit Ad" />

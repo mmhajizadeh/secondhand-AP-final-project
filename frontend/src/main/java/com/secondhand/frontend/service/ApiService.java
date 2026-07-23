@@ -159,7 +159,7 @@ public class ApiService {
      * @param cityId      The unique database ID of the selected city.
      * @throws Exception if the network request fails, unauthorized, or backend returns an error.
      */
-    public static void createAd(String title, String description, Long price, Long categoryId, Long cityId) throws Exception {
+    public static void createAd(String title, String description, Long price, Long categoryId, Long cityId, List<String> images) throws Exception {
         String token = SessionManager.getInstance().getToken();
 
         Map<String, Object> categoryMap = new HashMap<>();
@@ -175,6 +175,10 @@ public class ApiService {
         body.put("category", categoryMap);
         body.put("city", cityMap);
         body.put("status", "PENDING");
+
+        if (images != null && !images.isEmpty()) {
+            body.put("images", images);
+        }
 
         String jsonBody = mapper.writeValueAsString(body);
 
@@ -215,6 +219,35 @@ public class ApiService {
         }
 
         return mapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
+    }
+
+    /**
+     * Fetches details of a single advertisement by its unique database ID.
+     *
+     * @param adId The unique database identifier of the advertisement.
+     * @return The {@link Advertisement} object.
+     * @throws Exception if network request fails or ad is not found.
+     */
+    public static Advertisement getAdById(Long adId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            System.err.println("API ERROR: Status " + response.statusCode() + ", Body: " + response.body());
+            throw new RuntimeException("Failed to fetch ad details: " + response.statusCode());
+        }
+
+        try {
+            return mapper.readValue(response.body(), Advertisement.class);
+        } catch (Exception e) {
+            System.err.println("JSON Parsing Error: " + e.getMessage());
+            System.err.println("Response Body was: " + response.body());
+            throw e;
+        }
     }
 
     /**

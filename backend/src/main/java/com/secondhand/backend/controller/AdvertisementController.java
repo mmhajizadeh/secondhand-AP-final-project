@@ -2,6 +2,8 @@ package com.secondhand.backend.controller;
 
 import com.secondhand.backend.entity.Advertisement;
 import com.secondhand.backend.entity.AdvertisementStatus;
+import com.secondhand.backend.entity.User;
+import com.secondhand.backend.repository.UserRepository;
 import com.secondhand.backend.service.AdvertisementService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +24,11 @@ import java.util.List;
 @RequestMapping("/api/advertisements")
 public class AdvertisementController {
     private final AdvertisementService advertisementService;
+    private final UserRepository userRepository;
 
-    public AdvertisementController(AdvertisementService advertisementService) {
+    public AdvertisementController(AdvertisementService advertisementService, UserRepository userRepository) {
         this.advertisementService = advertisementService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -48,8 +52,11 @@ public class AdvertisementController {
     @PostMapping
     public Advertisement createAdvertisement(@RequestBody Advertisement advertisement, Authentication authentication) {
         String username = authentication.getName();
-
         advertisement.setOwnerUsername(username);
+
+        userRepository.findByUsername(username).ifPresent(user -> {
+            advertisement.setOwnerId(user.getId());
+        });
 
         return advertisementService.saveAdvertisement(advertisement);
     }
@@ -181,5 +188,17 @@ public class AdvertisementController {
     @GetMapping("/my")
     public List<Advertisement> getMyAds(Authentication authentication) {
         return advertisementService.getAdsByOwnerUsername(authentication.getName());
+    }
+
+    /**
+     * Fetches details of a single advertisement by its unique database ID.
+     * Endpoint: GET /api/advertisements/{id}
+     *
+     * @param id The ID of the advertisement to fetch.
+     * @return The matching {@link Advertisement} object.
+     */
+    @GetMapping("/{id}")
+    public Advertisement getAdById(@PathVariable Long id) {
+        return advertisementService.getAdvertisementById(id);
     }
 }
