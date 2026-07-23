@@ -17,7 +17,6 @@ This project was collaboratively developed by our team of two. Below is the brea
 ### 1. Mohammad Mehdi Hajizadeh
 **Role:** Full-Stack Developer (Advertisements, Search/Filtering, Core UI, & Navigation)
 * **Advertisement Management:** Implemented the core logic for creating, viewing, and managing ads with distinct statuses (`PENDING`, `ACTIVE`, `SOLD`).
-* **Image Upload System:** Developed a robust image upload feature capable of handling up to 3 images per ad using Base64 encoding for seamless transmission and storage.
 * **Advanced Search & Filtering:** Created a hybrid in-memory/backend filtering system allowing users to search by keywords, filter by City and Category, and apply strict numeric price range validations.
 * **Favorites System:** Implemented the backend logic and frontend UI for users to add/remove ads to their personal favorites list.
 * **Frontend Navigation & UI:**
@@ -47,7 +46,6 @@ This project was collaboratively developed by our team of two. Below is the brea
 ### Base & Complete Features
 * **User Authentication:** Secure JWT-based Login and Registration. Guest users can browse but are prompted to log in for interactions.
 * **Advertisement Lifecycle:** Ads go through a cycle (`PENDING` -> `ACTIVE` -> `SOLD`). Only `ACTIVE` ads are publicly visible.
-* **Media Support:** Upload and view multiple images for advertisements.
 * **Smart Search:** Filter items dynamically based on category, location, text, and price boundaries.
 * **Direct Communication:** Built-in messaging system connecting buyers directly to ad owners.
 * **Reputation System:** 1-5 star rating system for sellers after interactions.
@@ -74,6 +72,25 @@ This project was collaboratively developed by our team of two. Below is the brea
 3. Run the `HelloApplication.java` main class.
 4. The JavaFX application window will launch.
 
-### 3. Test Accounts
-* **Admin:** (Please create a user directly in the DB and set role to `ROLE_ADMIN` or use the default seeder if provided).
-* **User:** You can register a new user normally through the application's GUI.
+### 3. Test
+
+---
+
+## 🔑 Test Accounts & Pre-seeded Data
+
+To facilitate testing and evaluation, the database has been pre-seeded with sample cities, categories, and active advertisements. You can use the following test accounts to explore the system:
+
+**1. Admin Account**
+* **Username:** `admin1`
+* **Password:** `123456`
+* *Role:* Administrator (Access to Admin Dashboard, User Management, Ad Moderation).
+
+**2. Standard User Account 1**
+* **Username:** `user1`
+* **Password:** `123456`
+* *Role:* Regular User (Buyer/Seller). Has pre-existing ads and chats.
+
+**3. Standard User Account 2**
+* **Username:** `user2`
+* **Password:** `123456`
+* *Role:* Regular User (Buyer/Seller).
