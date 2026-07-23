@@ -38,6 +38,7 @@ public class MainController implements Initializable {
     @FXML private TextField searchField;
     @FXML private TextField minPriceField;
     @FXML private TextField maxPriceField;
+    @FXML private ComboBox<String> sortComboBox;
 
     @FXML private Label userInfoLabel;
     @FXML private Button adminDashboardBtn;
@@ -48,6 +49,7 @@ public class MainController implements Initializable {
         setupPriceFieldsValidation();
         setupUserSession();
         loadFilters();
+        setupSortListener();
         loadAds();
     }
 
@@ -71,7 +73,22 @@ public class MainController implements Initializable {
         }
     }
 
+    private void setupSortListener() {
+        if (sortComboBox != null) {
+            sortComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    onSearchAction();
+                }
+            });
+        }
+    }
+
     private void loadFilters() {
+        if (sortComboBox != null) {
+            sortComboBox.getItems().addAll("جدیدترین", "قدیمی‌ترین", "ارزان‌ترین", "گران‌ترین");
+            sortComboBox.getSelectionModel().selectFirst();
+        }
+
         try {
             List<City> cities = ApiService.getAllCities();
             List<Category> categories = ApiService.getAllCategories();
@@ -123,12 +140,7 @@ public class MainController implements Initializable {
     }
 
     private void loadAds() {
-        try {
-            List<Advertisement> ads = ApiService.getActiveAds();
-            displayAds(ads);
-        } catch (Exception e) {
-            showErrorAlert(e.getMessage());
-        }
+        onSearchAction();
     }
 
     private void displayAds(List<Advertisement> ads) {
@@ -235,6 +247,24 @@ public class MainController implements Initializable {
 
                 return match;
             }).collect(Collectors.toList());
+
+            if (sortComboBox != null && sortComboBox.getValue() != null) {
+                switch (sortComboBox.getValue()) {
+                    case "ارزان‌ترین":
+                        filteredAds.sort(java.util.Comparator.comparing(Advertisement::getPrice));
+                        break;
+                    case "گران‌ترین":
+                        filteredAds.sort(java.util.Comparator.comparing(Advertisement::getPrice).reversed());
+                        break;
+                    case "قدیمی‌ترین":
+                        filteredAds.sort(java.util.Comparator.comparing(Advertisement::getId));
+                        break;
+                    case "جدیدترین":
+                    default:
+                        filteredAds.sort(java.util.Comparator.comparing(Advertisement::getId).reversed());
+                        break;
+                }
+            }
 
             displayAds(filteredAds);
 
