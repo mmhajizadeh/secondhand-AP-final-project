@@ -57,13 +57,9 @@ public class ConversationsListController {
             }
         });
 
-        // Read + consume the navigation target ONCE, right here, before anything
-        // async happens. This avoids the target being read twice or read after
-        // it was already cleared by a previous run.
+        // Read target information from context
         Long targetAdId = NavigationContext.getTargetAdvertisementId();
         String targetSeller = NavigationContext.getTargetSellerUsername();
-        NavigationContext.setTargetAdvertisementId(null);
-        NavigationContext.setTargetSellerUsername(null);
 
         loadConversations(targetAdId, targetSeller);
     }
@@ -78,11 +74,6 @@ public class ConversationsListController {
         SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second-Hand Marketplace");
     }
 
-    /**
-     * Single entry point for loading the conversation list.
-     * If targetAdId/targetSeller are non-null, resolves them (find-or-create)
-     * after the list loads. Otherwise just displays the list.
-     */
     private void loadConversations(Long targetAdId, String targetSeller) {
         Task<List<ConversationResponse>> task = new Task<>() {
             @Override
@@ -99,6 +90,15 @@ public class ConversationsListController {
             }
 
             if (targetAdId != null && targetAdId > 0) {
+                String me = SessionManager.getInstance().getCurrentUser().getUsername();
+
+                if (me.equals(targetSeller)) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING,
+                            "You cannot start a conversation about your own advertisement.");
+                    alert.showAndWait();
+                    return;
+                }
+
                 ConversationResponse existingChat = findByAdId(conversations, targetAdId);
 
                 if (existingChat != null) {
@@ -125,20 +125,18 @@ public class ConversationsListController {
         if (conversations == null) {
             return null;
         }
+        String me = SessionManager.getInstance().getCurrentUser().getUsername();
         for (ConversationResponse c : conversations) {
             Long cAdId = c.getAdvertisementId();
-            if (cAdId != null && cAdId > 0 && cAdId.equals(adId)) {
+            boolean adMatches = cAdId != null && cAdId > 0 && cAdId.equals(adId);
+            boolean iAmParticipant = me.equals(c.getBuyerUsername()) || me.equals(c.getSellerUsername());
+            if (adMatches && iAmParticipant) {
                 return c;
             }
         }
         return null;
     }
 
-    /**
-     * Creates a new conversation on a background thread, then re-fetches the
-     * conversation list on the SAME background thread (no nested Task), and
-     * opens the new conversation on the FX thread once everything is done.
-     */
     private void createConversationThenOpen(Long adId, String seller) {
         Task<ConversationResponse> task = new Task<>() {
             @Override
@@ -147,7 +145,6 @@ public class ConversationsListController {
                         new StartConversationRequest(adId, seller, "Hi, I'm interested in your advertisement.");
                 chatService.startConversation(request);
 
-                // Re-fetch on this same background thread — no nested Task.
                 List<ConversationResponse> refreshed = chatService.getMyConversations();
                 ConversationResponse created = findByAdId(refreshed, adId);
 
@@ -186,6 +183,37 @@ public class ConversationsListController {
                 : conversation.getBuyerUsername();
 
         NavigationContext.setCurrentConversation(conversation.getId(), "Chat with " + otherParty);
+
+        if (conversation.getSellerId() != null) {
+            NavigationContext.setRatingSellerId(conversation.getSellerId());
+        } else if (NavigationContext.getTargetSellerId() != null) {
+            NavigationContext.setRatingSellerId(NavigationContext.getTargetSellerId());
+        }
+
+        if (conversation.getAdvertisementId() != null) {
+            NavigationContext.setRatingAdvertisementId(conversation.getAdvertisementId());
+        } else if (NavigationContext.getTargetAdvertisementId() != null) {
+            NavigationContext.setRatingAdvertisementId(NavigationContext.getTargetAdvertisementId());
+        }
+
+        if (conversation.getSellerUsername() != null) {
+            NavigationContext.setRatingSellerUsername(conversation.getSellerUsername());
+        } else if (NavigationContext.getTargetSellerUsername() != null) {
+            NavigationContext.setRatingSellerUsername(NavigationContext.getTargetSellerUsername());
+        }
+
+        if (conversation.getAdvertisementTitle() != null) {
+            NavigationContext.setRatingAdvertisementTitle(conversation.getAdvertisementTitle());
+        } else if (NavigationContext.getTargetAdvertisementTitle() != null) {
+            NavigationContext.setRatingAdvertisementTitle(NavigationContext.getTargetAdvertisementTitle());
+        }
+
+        NavigationContext.setTargetAdvertisementId(null);
+        NavigationContext.setTargetSellerId(null);
+        NavigationContext.setTargetSellerUsername(null);
+        NavigationContext.setTargetAdvertisementTitle(null);
+
         SceneManager.switchTo("/com/secondhand/frontend/view/conversation-detail-view.fxml", "Conversation");
     }
-}
+
+    }

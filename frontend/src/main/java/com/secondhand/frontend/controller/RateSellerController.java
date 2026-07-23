@@ -5,6 +5,7 @@ import com.secondhand.frontend.service.RatingService;
 import com.secondhand.frontend.service.dto.RatingRequest;
 import com.secondhand.frontend.service.dto.RatingResponse;
 import com.secondhand.frontend.util.NavigationContext;
+import com.secondhand.frontend.util.SceneManager;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -48,10 +49,11 @@ public class RateSellerController {
         scoreChoiceBox.getItems().addAll(1, 2, 3, 4, 5);
         scoreChoiceBox.setValue(5);
 
-        this.advertisementId = NavigationContext.getTargetAdvertisementId();
-        this.sellerId = NavigationContext.getTargetSellerId();
-        String sellerUsername = NavigationContext.getTargetSellerUsername();
-        String adTitle = NavigationContext.getTargetAdvertisementTitle();
+        // دریافت اطلاعات از فیلدهای اختصاصی Rating
+        this.advertisementId = NavigationContext.getRatingAdvertisementId();
+        this.sellerId = NavigationContext.getRatingSellerId();
+        String sellerUsername = NavigationContext.getRatingSellerUsername();
+        String adTitle = NavigationContext.getRatingAdvertisementTitle();
 
         if (sellerUsername != null && !sellerUsername.isBlank()) {
             if (adTitle != null && !adTitle.isBlank()) {
@@ -156,5 +158,9 @@ public class RateSellerController {
     private void hideMessages() {
         errorLabel.setVisible(false);
         successLabel.setVisible(false);
+    }
+    @FXML
+    private void handleBack() {
+        SceneManager.switchTo("/com/secondhand/frontend/view/conversation-detail-view.fxml", "Conversation");
     }
 }

@@ -199,13 +199,6 @@ public class AdDetailController implements Initializable {
 
     /**
      * Handles the back navigation action triggered by the user.
-     * <p>
-     * It intelligently checks the context: if the view is displayed as a modal/popup,
-     * it simply closes the popup window. If it is displayed on the primary application stage,
-     * it navigates back to the main dashboard.
-     * </p>
-     *
-     * @param event The action event triggered by clicking the back button.
      */
     @FXML
     public void onBackAction(ActionEvent event) {
@@ -236,6 +229,7 @@ public class AdDetailController implements Initializable {
             NavigationContext.setTargetAdvertisementId(currentAd.getId());
             NavigationContext.setTargetAdvertisementTitle(currentAd.getTitle());
             NavigationContext.setTargetSellerUsername(currentAd.getOwnerUsername());
+            NavigationContext.setTargetSellerId(currentAd.getOwnerId());
 
             SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Chats");
         }
@@ -252,6 +246,13 @@ public class AdDetailController implements Initializable {
         }
 
         if (currentAd != null) {
+            // Set Rating Context
+            NavigationContext.setRatingSellerId(currentAd.getOwnerId());
+            NavigationContext.setRatingAdvertisementId(currentAd.getId());
+            NavigationContext.setRatingSellerUsername(currentAd.getOwnerUsername());
+            NavigationContext.setRatingAdvertisementTitle(currentAd.getTitle());
+
+            // Set Target Context
             NavigationContext.setTargetAdvertisementId(currentAd.getId());
             NavigationContext.setTargetAdvertisementTitle(currentAd.getTitle());
             NavigationContext.setTargetSellerUsername(currentAd.getOwnerUsername());

@@ -117,6 +117,27 @@ public class ConversationDetailController {
         new Thread(task).start();
     }
 
+    /**
+     * Handles navigation to the Rate Seller view from the current conversation screen.
+     * Validates that both seller and advertisement details exist before proceeding.
+     */
+    @FXML
+    private void handleRateSeller() {
+        hideError();
+
+        Long sellerId = NavigationContext.getRatingSellerId();
+        Long advertisementId = NavigationContext.getRatingAdvertisementId();
+
+        // Validate that context parameters exist for rating
+        if (sellerId == null || advertisementId == null) {
+            showError("Cannot rate seller: Missing seller or advertisement information for this conversation.");
+            return;
+        }
+
+        // Navigate to the seller rating view
+        SceneManager.switchTo("/com/secondhand/frontend/view/rate-seller-view.fxml", "Rate Seller");
+    }
+
     @FXML
     private void handleBack() {
         SceneManager.switchTo("/com/secondhand/frontend/view/conversations-list-view.fxml", "My Conversations");
