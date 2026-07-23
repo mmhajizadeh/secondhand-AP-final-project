@@ -1,5 +1,6 @@
 package com.secondhand.frontend.controller;
 
+import com.secondhand.frontend.model.Advertisement;
 import com.secondhand.frontend.model.Category;
 import com.secondhand.frontend.model.City;
 import com.secondhand.frontend.service.ApiService;
@@ -7,11 +8,7 @@ import com.secondhand.frontend.util.SceneManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
@@ -24,7 +21,12 @@ import java.util.Base64;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for creating new advertisements or editing existing ones.
+ */
 public class NewAdController implements Initializable {
+
+    private static Advertisement adToEdit = null;
 
     @FXML private TextField titleField;
     @FXML private TextField priceField;
@@ -32,12 +34,45 @@ public class NewAdController implements Initializable {
     @FXML private ComboBox<City> cityComboBox;
     @FXML private TextArea descriptionArea;
     @FXML private Label imageCountLabel;
+    @FXML private Button submitButton;
 
     private final List<String> base64Images = new ArrayList<>();
+
+    /**
+     * Sets the advertisement to be edited. Pass null to switch back to creation mode.
+     */
+    public static void setAdToEdit(Advertisement ad) {
+        adToEdit = ad;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadDropdowns();
+        setupPriceValidation();
+
+        if (adToEdit != null) {
+            populateFieldsForEdit();
+        }
+    }
+
+    /**
+     * Restricts the price text field to accept only numeric values.
+     */
+    private void setupPriceValidation() {
+        priceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                priceField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+    }
+
+    private void populateFieldsForEdit() {
+        titleField.setText(adToEdit.getTitle());
+        priceField.setText(String.valueOf(adToEdit.getPrice()));
+        descriptionArea.setText(adToEdit.getDescription());
+        if (submitButton != null) {
+            submitButton.setText("Update Ad");
+        }
     }
 
     private void loadDropdowns() {
@@ -70,6 +105,12 @@ public class NewAdController implements Initializable {
                     return null;
                 }
             });
+
+            if (adToEdit != null) {
+                cities.stream().filter(c -> c.getId().equals(adToEdit.getCity().getId())).findFirst().ifPresent(cityComboBox::setValue);
+                categories.stream().filter(c -> c.getId().equals(adToEdit.getCategory().getId())).findFirst().ifPresent(categoryComboBox::setValue);
+            }
+
         } catch (Exception e) {
             showError("Failed to load categories and cities.");
         }
@@ -88,7 +129,7 @@ public class NewAdController implements Initializable {
                 showError("You can only select up to 3 images. The first 3 will be used.");
                 files = files.subList(0, 3);
             } else {
-                base64Images.clear(); // پاک کردن انتخاب‌های قبلی
+                base64Images.clear();
             }
 
             for (File file : files) {
@@ -122,12 +163,16 @@ public class NewAdController implements Initializable {
         try {
             Long price = Long.parseLong(priceText.trim().replace(",", ""));
 
-            ApiService.createAd(title, desc, price, selectedCategory.getId(), selectedCity.getId(), base64Images);
+            if (adToEdit == null) {
+                ApiService.createAd(title, desc, price, selectedCategory.getId(), selectedCity.getId(), base64Images);
+                showSuccess("Advertisement submitted successfully! It is now pending admin approval.");
+            } else {
+                ApiService.updateAd(adToEdit.getId(), title, desc, price, selectedCategory.getId(), selectedCity.getId(), base64Images);
+                showSuccess("Advertisement updated successfully! It is now pending admin re-approval.");
+                adToEdit = null;
+            }
 
-            showSuccess("Advertisement submitted successfully! It is now pending admin approval.");
             handleCancel();
-        } catch (NumberFormatException e) {
-            showError("Please enter a valid price number.");
         } catch (Exception e) {
             showError("Error submitting ad: " + e.getMessage());
         }
@@ -135,6 +180,7 @@ public class NewAdController implements Initializable {
 
     @FXML
     private void handleCancel() {
+        adToEdit = null;
         SceneManager.switchTo("/com/secondhand/frontend/view/main-view.fxml", "Second Hand Market");
     }
 

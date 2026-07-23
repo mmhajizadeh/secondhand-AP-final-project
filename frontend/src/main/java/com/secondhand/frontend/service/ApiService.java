@@ -197,6 +197,61 @@ public class ApiService {
     }
 
     /**
+     * Sends a request to update an existing advertisement.
+     * <p>
+     * Constructs a JSON payload with the updated ad details and sends a PUT request
+     * to the backend. Requires the user to be the owner of the advertisement.
+     * </p>
+     *
+     * @param adId        The ID of the advertisement to update.
+     * @param title       The updated title.
+     * @param description The updated description.
+     * @param price       The updated price in Tomans.
+     * @param categoryId  The updated category ID.
+     * @param cityId      The updated city ID.
+     * @param images      The updated list of Base64 images.
+     * @throws Exception if the network request fails, unauthorized, or backend returns an error.
+     */
+    public static void updateAd(Long adId, String title, String description, Long price, Long categoryId, Long cityId, List<String> images) throws Exception {
+        String token = SessionManager.getInstance().getToken();
+
+        Map<String, Object> categoryMap = new HashMap<>();
+        categoryMap.put("id", categoryId);
+
+        Map<String, Object> cityMap = new HashMap<>();
+        cityMap.put("id", cityId);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("title", title);
+        body.put("description", description);
+        body.put("price", price);
+        body.put("category", categoryMap);
+        body.put("city", cityMap);
+
+        // need to apply
+        body.put("status", "PENDING");
+
+        if (images != null && !images.isEmpty()) {
+            body.put("images", images);
+        }
+
+        String jsonBody = mapper.writeValueAsString(body);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + adId))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to update ad: " + response.statusCode());
+        }
+    }
+
+    /**
      * Fetches advertisements strictly owned by the currently logged-in user.
      * The backend securely identifies the user via the provided JWT token.
      *

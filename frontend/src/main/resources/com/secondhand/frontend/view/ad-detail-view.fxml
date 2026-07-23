@@ -64,6 +64,7 @@
                     <!-- Action Buttons -->
                     <HBox spacing="15.0">
                         <Button fx:id="chatButton" mnemonicParsing="false" onAction="#handleChatWithSeller" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="💬 Start Conversation" />
+                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditAd" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Edit Advertisement" visible="false" managed="false" />
                     </HBox>
 
                     <VBox spacing="10.0" style="-fx-background-color: #F8F9FA; -fx-padding: 15; -fx-background-radius: 5;">

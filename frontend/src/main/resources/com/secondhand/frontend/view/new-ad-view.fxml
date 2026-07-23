@@ -64,7 +64,7 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <Button mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" text="Cancel" />
-                    <Button mnemonicParsing="false" onAction="#handleSubmit" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Submit Ad" />
+                    <Button mnemonicParsing="false" onAction="#handleSubmit" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Submit Ad" fx:id="submitButton"/>
                 </HBox>
 
             </VBox>

@@ -42,7 +42,7 @@ public class AdDetailController implements Initializable {
     @FXML private Text descriptionText;
     @FXML private VBox commentsVBox;
     @FXML private Button chatButton;
-    @FXML private Button rateButton;
+    @FXML private Button editButton;
 
     private final RatingService ratingService = new RatingService();
 
@@ -80,13 +80,21 @@ public class AdDetailController implements Initializable {
             }
 
             boolean isActive = "ACTIVE".equalsIgnoreCase(currentAd.getStatus());
+
+            String currentLoggedInUser = getLoggedInUsername();
+            boolean isOwner = currentLoggedInUser != null && currentLoggedInUser.equals(currentAd.getOwnerUsername());
+
+            boolean isSold = "SOLD".equalsIgnoreCase(currentAd.getStatus());
+
             if (chatButton != null) {
-                chatButton.setVisible(isActive);
-                chatButton.setManaged(isActive);
+                chatButton.setVisible(isActive && !isOwner);
+                chatButton.setManaged(isActive && !isOwner);
             }
-            if (rateButton != null) {
-                rateButton.setVisible(isActive);
-                rateButton.setManaged(isActive);
+
+            if (editButton != null) {
+                boolean canEdit = isOwner && !isSold;
+                editButton.setVisible(isOwner);
+                editButton.setManaged(isOwner);
             }
 
             loadSellerRating();
@@ -236,31 +244,22 @@ public class AdDetailController implements Initializable {
     }
 
     /**
-     * Opens the seller rating modal popup.
+     * Navigates the owner to the ad creation form in edit mode
+     * and closes the current popup window.
      */
     @FXML
-    private void handleRateSeller() {
-        if (!isUserLoggedIn()) {
-            redirectToLogin();
-            return;
-        }
-
+    private void handleEditAd() {
         if (currentAd != null) {
-            // Set Rating Context
-            NavigationContext.setRatingSellerId(currentAd.getOwnerId());
-            NavigationContext.setRatingAdvertisementId(currentAd.getId());
-            NavigationContext.setRatingSellerUsername(currentAd.getOwnerUsername());
-            NavigationContext.setRatingAdvertisementTitle(currentAd.getTitle());
+            NewAdController.setAdToEdit(currentAd);
 
-            // Set Target Context
-            NavigationContext.setTargetAdvertisementId(currentAd.getId());
-            NavigationContext.setTargetAdvertisementTitle(currentAd.getTitle());
-            NavigationContext.setTargetSellerUsername(currentAd.getOwnerUsername());
-            NavigationContext.setTargetSellerId(currentAd.getOwnerId());
+            if (editButton != null && editButton.getScene() != null) {
+                Stage currentStage = (Stage) editButton.getScene().getWindow();
+                if (!currentStage.equals(SceneManager.getPrimaryStage())) {
+                    currentStage.close();
+                }
+            }
 
-            SceneManager.showAsPopup("/com/secondhand/frontend/view/rate-seller-view.fxml", "Rate Seller");
-
-            loadSellerRating();
+            SceneManager.switchTo("/com/secondhand/frontend/view/new-ad-view.fxml", "Edit Advertisement");
         }
     }
 
@@ -272,6 +271,28 @@ public class AdDetailController implements Initializable {
     private boolean isUserLoggedIn() {
         String token = SessionManager.getInstance().getToken();
         return token != null && !token.trim().isEmpty();
+    }
+
+    /**
+     * Extracts the username from the current JWT token payload.
+     * @return the logged-in username, or null if not logged in.
+     */
+    private String getLoggedInUsername() {
+        String token = SessionManager.getInstance().getToken();
+        if (token != null && !token.trim().isEmpty()) {
+            try {
+                String[] chunks = token.split("\\.");
+                if (chunks.length >= 2) {
+                    String payload = new String(java.util.Base64.getUrlDecoder().decode(chunks[1]));
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    java.util.Map<String, Object> map = mapper.readValue(payload, java.util.Map.class);
+                    return (String) map.get("sub"); // Spring Security stores username in 'sub' by default
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**

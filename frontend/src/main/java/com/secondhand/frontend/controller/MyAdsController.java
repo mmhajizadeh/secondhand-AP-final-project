@@ -63,12 +63,18 @@ public class MyAdsController implements Initializable {
                     soldBtn.setOnAction(e -> handleMarkSold(ad));
                     soldBtn.setDisable(!"ACTIVE".equals(ad.getStatus()) || "SOLD".equals(ad.getStatus()));
 
+                    // Edit button
+                    Button editBtn = new Button("Edit");
+                    editBtn.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white; -fx-cursor: hand;");
+                    editBtn.setOnAction(e -> handleEditAd(ad));
+                    editBtn.setDisable("SOLD".equals(ad.getStatus()));
+
                     Button deleteBtn = new Button("Delete");
                     deleteBtn.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-cursor: hand;");
                     deleteBtn.setOnAction(e -> handleDelete(ad));
                     deleteBtn.setDisable("SOLD".equals(ad.getStatus()));
 
-                    root.getChildren().addAll(titleLabel, spacer, viewBtn, soldBtn, deleteBtn);
+                    root.getChildren().addAll(titleLabel, spacer, viewBtn, editBtn, soldBtn, deleteBtn);
                     setGraphic(root);
                 }
             }
@@ -88,6 +94,11 @@ public class MyAdsController implements Initializable {
         AdDetailController.setSelectedAd(ad);
         NavigationContext.setTargetAdvertisementId(ad.getId());
         SceneManager.showAsPopup("/com/secondhand/frontend/view/ad-detail-view.fxml", "Advertisement Details");
+    }
+
+    private void handleEditAd(Advertisement ad) {
+        NewAdController.setAdToEdit(ad);
+        SceneManager.switchTo("/com/secondhand/frontend/view/new-ad-view.fxml", "Edit Advertisement");
     }
 
     private void handleMarkSold(Advertisement ad) {

@@ -125,6 +125,7 @@ public class AdvertisementService {
         existingAd.setPrice(updatedAd.getPrice());
         existingAd.setCity(updatedAd.getCity());
         existingAd.setCategory(updatedAd.getCategory());
+        existingAd.setStatus(AdvertisementStatus.PENDING);
 
         ensureOwnerId(existingAd);
         return advertisementRepository.save(existingAd);
