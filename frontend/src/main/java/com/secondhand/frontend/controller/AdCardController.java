@@ -67,6 +67,7 @@ public class AdCardController {
     /**
      * Handles the click event on the favorite button.
      * Toggles the favorite state and updates the UI accordingly.
+     * Updates the UI heart icon color and communicates with the backend API.
      */
     @FXML
     public void handleFavoriteClick() {
@@ -76,7 +77,7 @@ public class AdCardController {
         }
 
         try {
-            if (isFavorite) {
+            if (!isFavorite) {
                 ApiService.addFavorite(currentAdId);
                 isFavorite = true;
                 favoriteButton.setText("♥");
