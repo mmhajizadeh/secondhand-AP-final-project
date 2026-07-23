@@ -45,9 +45,30 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setupPriceFieldsValidation();
         setupUserSession();
         loadFilters();
         loadAds();
+    }
+
+    /**
+     * Attaches numeric format listeners to the price input fields to prevent non-digit entry.
+     */
+    private void setupPriceFieldsValidation() {
+        if (minPriceField != null) {
+            minPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    minPriceField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+        }
+        if (maxPriceField != null) {
+            maxPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    maxPriceField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+        }
     }
 
     private void loadFilters() {
