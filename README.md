@@ -111,7 +111,7 @@ secondhand-AP-final-project/
 * **Build Tool:** Maven.
 * **IDE:** IntelliJ IDEA (Recommended).
 
-### 1. 1. Launching the Backend Server
+### 1. Launching the Backend Server
 
 ```code
 cd backend
